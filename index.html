@@ -3,191 +3,457 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>400 - Not Ready</title>
+    <title>sPhysics Documentation - Sandwichmaster28</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configure Tailwind for a custom font (Inter) -->
+    <!-- Configure Tailwind for Dark Mode and custom theme -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        'primary-bg': '#0a0a0a',
+                        'secondary-bg': '#1f2937', // Slightly lighter dark gray
+                        'accent': '#4f46e5', // Cool blue/indigo accent
+                        'text-light': '#f3f4f6',
+                        'text-muted': '#9ca3af',
+                    },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                     },
-                    colors: {
-                        // Custom ultra-dark background
-                        'deep-void': '#080808',
-                        // Slightly lighter panel background
-                        'dark-panel': '#121212',
-                        // Accent color for interactivity, still dark but distinguishable
-                        'dark-accent': '#333333',
-                    },
-                    keyframes: {
-                        // Custom pulse/glow for the card
-                        subtleGlow: {
-                            '0%, 100%': { boxShadow: '0 0 10px rgba(50, 50, 50, 0.2)' },
-                            '50%': { boxShadow: '0 0 15px rgba(50, 50, 50, 0.4)' },
-                        }
-                    },
-                    animation: {
-                        'subtle-glow': 'subtleGlow 4s ease-in-out infinite',
-                    }
                 }
             }
         }
     </script>
     <style>
-        /* Apply the custom font and ensure the body fills the viewport */
+        /* Ensuring Inter font is used */
         body {
             font-family: 'Inter', sans-serif;
-            cursor: default;
+            background-color: #0a0a0a;
+            color: #f3f4f6;
         }
-
-        /* Custom scrollbar styling for a darker theme */
+        /* Custom scrollbar for a cleaner look */
         ::-webkit-scrollbar {
             width: 8px;
         }
-
         ::-webkit-scrollbar-thumb {
-            background: #252525;
+            background-color: #374151;
             border-radius: 4px;
         }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3a3a3a;
-        }
-
         ::-webkit-scrollbar-track {
-            background: #080808;
+            background: #1f2937;
+        }
+        /* Fade-in for content transitions */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out;
         }
     </style>
 </head>
-<body class="h-screen w-screen flex items-center justify-center bg-deep-void text-gray-300 p-4 overflow-auto">
+<body class="bg-primary-bg min-h-screen flex flex-col">
 
-    <!-- Container for the Error Message Card -->
-    <main id="error-card"
-          class="text-center max-w-lg w-full p-8 md:p-12 rounded-xl shadow-2xl bg-dark-panel border border-gray-800 transition-all duration-500 animate-subtle-glow">
+    <!-- Main Content Wrapper -->
+    <div id="app" class="flex flex-1 flex-col lg:flex-row">
 
-        <!-- Status Code -->
-        <h1 id="status-code" class="text-7xl sm:text-8xl lg:text-9xl font-extrabold mb-4 tracking-tight text-gray-500/50 transition-colors duration-500">
-            400
-        </h1>
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="bg-secondary-bg text-text-light w-full lg:w-64 p-4 lg:p-6 border-b lg:border-r border-gray-700 shadow-xl flex-shrink-0">
+            <header class="mb-8">
+                <div class="flex items-center space-x-3 mb-4">
+                    <!-- Custom sPhysics Icon SVG -->
+                    <svg class="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 3D Cube Structure -->
+                        <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <!-- Vertices Dots -->
+                        <circle cx="12" cy="2" r="1.5" fill="currentColor" opacity="0.8"/>
+                        <circle cx="2" cy="7" r="1.5" fill="currentColor" opacity="0.8"/>
+                        <circle cx="2" cy="17" r="1.5" fill="currentColor" opacity="0.8"/>
+                        <circle cx="12" cy="22" r="1.5" fill="currentColor" opacity="0.8"/>
+                        <circle cx="22" cy="17" r="1.5" fill="currentColor" opacity="0.8"/>
+                        <circle cx="22" cy="7" r="1.5" fill="currentColor" opacity="0.8"/>
+                        <!-- Inner Text -->
+                        <text x="12" y="15" font-family="sans-serif" font-size="6" font-weight="bold" text-anchor="middle" fill="#0a0a0a">sPhys</text>
+                    </svg>
 
-        <!-- Error Title -->
-        <h2 id="error-title" class="text-3xl sm:text-4xl font-medium mb-6 text-gray-200 transition-colors duration-500">
-            Website can't be accessed.
-        </h2>
+                    <h1 class="text-3xl font-extrabold text-accent tracking-wider">sPhysics</h1>
+                </div>
+                <p class="text-xs text-text-muted">A framework by Sandwichmaster28</p>
+            </header>
 
-        <!-- Reason / Explanation -->
-        <p id="error-reason" class="text-xl sm:text-2xl text-gray-400 italic mb-10 transition-colors duration-500">
-            "Website isn't even ready bruh."
-        </p>
-        
-        <!-- === MINIGAME SECTION === -->
-        <div id="minigame-container">
-            <!-- Progress Text -->
-            <p id="progress-text" class="text-sm text-gray-500 mb-2 transition-opacity duration-300">
-                Attempting unauthorized backend access... (0/10)
-            </p>
+            <nav class="space-y-2">
+                <!-- Navigation Links with Icons -->
+                <a href="#home" data-page="home" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    <span>Home</span>
+                </a>
+                <a href="#physics" data-page="physics" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.73v.52a2 2 0 0 1-1 1.73l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.73v-.52a2 2 0 0 1 1-1.73l.15-.08a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Physics</span>
+                </a>
+                <a href="#sound" data-page="sound" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                    <span>Sound</span>
+                </a>
+                <a href="#geometry" data-page="geometry" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/></svg>
+                    <span>Geometry Solver</span>
+                </a>
+                <a href="#data" data-page="data" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+                    <span>Data Get/Post</span>
+                </a>
+            </nav>
+        </aside>
 
-            <!-- Hack Button -->
-            <button id="hack-button" onclick="hackSite()"
-                    class="w-full py-3 px-6 rounded-lg font-semibold tracking-wide
-                           bg-dark-accent text-gray-300 hover:bg-gray-500/20 hover:text-green-400
-                           focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-dark-panel
-                           transition-all duration-200 active:scale-[0.98]">
-                [ INITIATE HACK.EXE ]
+        <!-- Main Content Area -->
+        <main id="content" class="flex-grow p-4 lg:p-10 overflow-y-auto w-full">
+            <!-- Content will be injected here by JavaScript -->
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="p-4 lg:p-8 border-t border-gray-700 bg-secondary-bg text-text-muted text-sm flex flex-col md:flex-row justify-between items-center flex-shrink-0">
+        <p>&copy; 2023 sPhysics. All rights reserved.</p>
+        <div class="flex space-x-6 mt-4 md:mt-0 items-center">
+            <a href="#physics" class="hover:text-accent transition duration-150">Documentation</a>
+            <a href="#" class="hover:text-accent transition duration-150">API Reference</a>
+            <a href="#" class="hover:text-accent transition duration-150">Status</a>
+            <button onclick="window.open('https://github.com/Sandwichmaster28/sPhysics/archive/main.zip', '_blank')" class="flex items-center space-x-2 px-3 py-1 bg-accent text-white font-semibold rounded-lg hover:bg-indigo-600 transition duration-150">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Download Source</span>
             </button>
         </div>
+    </footer>
 
-        <!-- Dynamic Message Box (Hidden by default) -->
-        <div id="message-box" class="mt-8 pt-6 border-t border-gray-700/50 hidden">
-             <p class="text-base text-green-400 font-mono tracking-wider">
-                ACCESS GRANTED. The site is still useless, though. How do you feel, wasting your time?
-             </p>
-        </div>
 
-    </main>
-
-    <!-- JavaScript Game Logic -->
+    <!-- JavaScript for Navigation and Content Injection -->
     <script>
-        // Game state
-        const HACK_TARGET = 10;
-        let hackCount = 0;
-        let isHacked = false;
+        const content = document.getElementById('content');
+        const navLinks = document.querySelectorAll('.nav-link');
 
-        // DOM elements
-        const button = document.getElementById('hack-button');
-        const progressText = document.getElementById('progress-text');
-        const messageBox = document.getElementById('message-box');
-        const statusCode = document.getElementById('status-code');
-        const errorTitle = document.getElementById('error-title');
-        const errorReason = document.getElementById('error-reason');
-        const errorCard = document.getElementById('error-card');
-        const minigameContainer = document.getElementById('minigame-container');
-        
-        /**
-         * Converts the progress count into a percentage string for display.
-         * @param {number} count - The current click count.
-         * @returns {string} The formatted progress text.
-         */
-        function getProgressText(count) {
-            const percentage = Math.floor((count / HACK_TARGET) * 100);
-            return `Attempting unauthorized backend access... (${count}/${HACK_TARGET}) - ${percentage}%`;
+        // Helper functions for rendering template elements (used in home page)
+        function renderStatusItem(name, status, color) {
+            return `
+                <li class="flex justify-between items-center text-sm">
+                    <span class="text-text-light">${name}</span>
+                    <span class="font-medium flex items-center space-x-1 text-${color}">
+                        <svg class="w-3 h-3 fill-current" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="3"/></svg>
+                        <span>${status}</span>
+                    </span>
+                </li>
+            `;
         }
 
-        /**
-         * Handles the button click event for the minigame.
-         */
-        function hackSite() {
-            if (isHacked) return; // Prevent further action if already hacked
+        function renderQuickLink(page, title, description, iconSvg) {
+            return `
+                <a href="#${page}" data-page="${page}" class="quick-link block p-5 rounded-xl transition duration-150 transform hover:scale-[1.02] bg-gray-800/80 hover:bg-gray-700/80 shadow-md">
+                    <div class="flex items-start space-x-4">
+                        <div class="p-2 bg-accent/20 rounded-full text-accent">${iconSvg}</div>
+                        <div>
+                            <span class="text-xl font-bold text-text-light mb-1">${title}</span>
+                            <p class="text-sm text-text-muted">${description}</p>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
 
-            hackCount++;
-            progressText.textContent = getProgressText(hackCount);
+        // Page content definitions
+        const pages = {
+            home: {
+                title: "Home", // Placeholder title
+                body: `
+                    <div class="space-y-12">
+                        <!-- Large Header Block -->
+                        <div class="flex flex-col lg:flex-row lg:items-end justify-between pt-10">
+                            <div class="lg:w-3/5">
+                                <span class="text-green-400 font-medium tracking-widest text-sm block mb-3">v2.1.0 Stable Build</span>
+                                <h2 class="text-5xl lg:text-7xl font-extrabold text-text-light leading-tight mb-4">
+                                    Next Gen Roblox Engineering.
+                                </h2>
+                                <p class="text-xl text-text-muted mb-8">Doing what DAVID "doesn't wanna" do.</p>
 
-            // Give visual feedback on click
-            button.classList.add('animate-none'); // Disable transition briefly
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-            }, 50);
+                                <div class="flex space-x-4">
+                                    <button onclick="window.location.hash='#physics'" class="px-6 py-3 bg-accent text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-600 transition duration-150">
+                                        Start Documentation
+                                    </button>
+                                    <button onclick="window.open('https://github.com/Sandwichmaster28/sPhysics', '_blank')" class="px-6 py-3 bg-gray-700 text-text-light font-semibold rounded-lg shadow-lg hover:bg-gray-600 transition duration-150">
+                                        View Source
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="lg:w-2/5 mt-8 lg:mt-0 p-8 bg-gray-800 rounded-xl flex items-center justify-center">
+                                <!-- Large Code Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14 4-4 16"/></svg>
+                            </div>
+                        </div>
 
-            // Check for success condition
-            if (hackCount >= HACK_TARGET) {
-                isHacked = true;
-                
-                // 1. Change Button State
-                button.textContent = 'ACCESS GRANTED [LOCKED]';
-                button.classList.remove('bg-dark-accent', 'hover:bg-gray-500/20', 'hover:text-green-400');
-                button.classList.add('bg-green-700/50', 'text-green-400', 'cursor-not-allowed');
-                
-                // 2. Display Success Message
-                messageBox.classList.remove('hidden');
-                
-                // 3. Cinematic UI Change
-                statusCode.textContent = '200';
-                statusCode.classList.remove('text-gray-500/50', 'animate-subtle-glow');
-                statusCode.classList.add('text-green-500/80');
+                        <!-- Core Modules Quick Links -->
+                        <div class="space-y-6 pt-10">
+                            <h3 class="text-2xl font-semibold text-text-light border-b border-gray-700 pb-2">Core Modules</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                ${renderQuickLink('physics', 'Parallel Physics', 'Real-time error correction for standard rigid body simulation.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.73v.52a2 2 0 0 1-1 1.73l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.73v-.52a2 2 0 0 1 1-1.73l.15-.08a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>')}
+                                ${renderQuickLink('sound', 'Sound Engine', 'Raycasted audio propagation with dual API support.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>')}
+                                ${renderQuickLink('geometry', 'Geometry Solver', 'Advanced fluid dynamics and destruction physics.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/></svg>')}
+                                ${renderQuickLink('data', 'Data I/O', 'Secure RemoteFunction handling and HTTP networking.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>')}
+                            </div>
+                        </div>
 
-                errorTitle.textContent = 'Backend Connection Established.';
-                errorReason.textContent = 'Initiating "ready bruh" protocol...';
-                errorReason.classList.remove('text-gray-400');
-                errorReason.classList.add('text-green-300');
-                
-                // Remove initial subtle glow animation and add a brief success pulse
-                errorCard.classList.remove('animate-subtle-glow');
-                errorCard.classList.add('animate-pulse');
-                
-                // Hide progress text
-                progressText.classList.add('opacity-0');
-            } else {
-                // Flash the button text to show progress
-                button.textContent = `[ INITIATE HACK.EXE ] (${HACK_TARGET - hackCount} remaining)`;
-                setTimeout(() => {
-                    button.textContent = '[ INITIATE HACK.EXE ]';
-                }, 100);
+                        <!-- Current Updates/Status Section -->
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-10 border-t border-gray-700">
+                            <div class="lg:col-span-2">
+                                <div class="flex items-center space-x-2 mb-4">
+                                    <h3 class="text-2xl font-semibold text-text-light flex items-center space-x-2 border-b-2 border-accent pb-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/></svg>
+                                        <span>Current Updates</span>
+                                    </h3>
+                                    <button class="text-sm text-text-muted hover:text-accent transition duration-150">Changelog</button>
+                                </div>
+                                <p class="text-text-muted">A brief summary of the latest module changes and performance metrics from the last production deployment.</p>
+                            </div>
+                            <div class="lg:col-span-1 bg-gray-800/80 p-5 rounded-xl shadow-inner border border-gray-700">
+                                <h4 class="text-lg font-bold flex items-center space-x-2 mb-4 text-text-light">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-accent"><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
+                                    <span>System Status</span>
+                                </h4>
+                                <ul class="space-y-3">
+                                    ${renderStatusItem('Physics Engine', 'Operational', 'green-500')}
+                                    ${renderStatusItem('Sound API', 'Operational', 'green-500')}
+                                    ${renderStatusItem('Data Relay', 'High Latency', 'yellow-500')}
+                                </ul>
+                                <button class="mt-4 w-full py-2 bg-gray-700 text-text-light rounded-lg hover:bg-gray-600 transition duration-150">
+                                    View Full Report
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            physics: {
+                title: "Physics Engine",
+                body: `
+                    <div class="space-y-8">
+                        <span class="inline-block bg-accent/20 text-accent text-xs font-semibold px-3 py-1 rounded-full tracking-widest uppercase mb-4">
+                            CORE MODULE
+                        </span>
+                        <h2 class="text-5xl font-extrabold text-text-light mb-6">Physics Engine</h2>
+                        <p class="text-text-light text-xl">
+                            A parallel processing layer that runs alongside the default Roblox Physics engine, providing real-time error correction and granular control over environmental constants.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 space-y-3">
+                                <h3 class="text-xl font-semibold text-accent flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/></svg>
+                                    <span>Parallel Correction</span>
+                                </h3>
+                                <p class="text-text-muted">
+                                    The engine monitors rigid body states every frame. When the default solver introduces micro-errors (floating point drift), our engine instantly snaps the object back to its mathematically correct trajectory without visual stuttering.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 space-y-3">
+                                <h3 class="text-xl font-semibold text-accent flex items-center space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                                    <span>Workspace Control</span>
+                                </h3>
+                                <p class="text-text-muted">
+                                    Direct override capability for global Workspace settings. Manipulate <code>Gravity</code>, <code>AirDensity</code>, and <code>GlobalFriction</code> in real-time via the API, bypassing standard replication delays.
+                                </p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-3xl font-bold text-text-light pt-4 border-t border-gray-700">Implementation Details</h3>
+
+                        <div class="bg-gray-800/80 rounded-xl shadow-lg overflow-hidden border border-gray-700">
+                            <div class="bg-gray-700 text-sm px-4 py-2 border-b border-gray-600">
+                                <span class="text-text-light">PhysicsService.lua</span>
+                            </div>
+                            <pre class="p-6 bg-primary-bg overflow-x-auto text-sm">
+<code class="text-green-400">
+-- Example: Initializing the correction loop
+
+local Physics = require(game.ServerStorage.Modules.Physics)
+local CorrectionRate = 60 -- Hz
+
+Physics.StartParallelProcess(function(delta)
+    local drift = Workspace.Gravity - Physics.ExpectedGravity
+    if math.abs(drift) > 0.001 then
+        Physics.ForceCorrect(Workspace, drift)
+    end
+end)
+</code>
+                            </pre>
+                        </div>
+
+                        <div class="p-4 rounded-xl border-l-4 border-yellow-500 bg-yellow-900/30 text-yellow-300 flex items-start space-x-3 mt-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+                            <div>
+                                <h4 class="font-bold text-yellow-500">Resource Usage Warning</h4>
+                                <p class="text-sm">
+                                    Enabling full correction mode on over 500 active rigid bodies may impact server heartbeat. It is recommended to use <strong class="text-yellow-400">Zone-Based Correction</strong> for large maps.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            sound: {
+                title: "Sound: The Adaptive Audio Engine",
+                body: `
+                    <div class="space-y-6">
+                        <p class="text-text-light text-lg">
+                            The Adaptive Audio Engine dynamically generates soundscapes based on player interaction and environmental geometry, adding realistic depth with impact sounds, breaking effects, and ambient wind.
+                        </p>
+
+                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
+                            <h3 class="text-xl font-semibold text-accent mb-3">Dynamic Sound Generation</h3>
+                            <ul class="list-disc list-inside space-y-2 text-text-muted pl-4">
+                                <li><strong class="text-text-light">Impact Sounds:</strong> Varies loudness and tone based on velocity and material types (e.g., metal hitting concrete vs. wood hitting dirt).</li>
+                                <li><strong class="text-text-light">Breaking Sounds:</strong> Triggers multi-stage audio effects during object destruction, controlled by the Geometry Solver.</li>
+                                <li><strong class="text-text-light">Footsteps & Wind:</strong> Raycasting determines surface material for footsteps; procedural generation for ambient wind/environmental sounds.</li>
+                            </ul>
+                        </section>
+
+                        <section class="bg-gray-800/80 p-6 rounded-xl border border-accent/30">
+                            <h3 class="text-xl font-semibold text-accent mb-3">API Modes</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                                <div class="p-4 bg-gray-700/50 rounded-lg">
+                                    <h4 class="text-lg font-bold text-indigo-400">Default Sound API Mode</h4>
+                                    <p class="text-sm text-text-muted">Leverages the platform's built-in experimental audio API. Simpler integration, but less control over audio occlusion and reverb effects.</p>
+                                </div>
+                                <div class="p-4 bg-gray-700/50 rounded-lg border border-accent">
+                                    <h4 class="text-lg font-bold text-accent">Custom API Mode (Recommended)</h4>
+                                    <p class="text-sm text-text-muted">Uses our proprietary, raycasted audio engine. Simulates sound occlusion and environmental reflection, resulting in truly 3D, realistic audio experiences.</p>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                `
+            },
+            geometry: {
+                title: "Geometry Solver: Advanced Simulation",
+                body: `
+                    <div class="space-y-6">
+                        <p class="text-text-light text-lg">
+                            The Geometry Solver is responsible for complex structural and fluid dynamics that extend beyond the capabilities of the core sPhysics engine, handling highly interactive world elements.
+                        </p>
+
+                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
+                            <h3 class="text-xl font-semibold text-accent mb-3">Destruction Physics</h3>
+                            <p class="text-text-muted">
+                                Utilizes a custom cellular automaton algorithm to model structural integrity. When a component's integrity fails, it automatically fragments the mesh into destructible, smaller parts, managed efficiently with internal chunking to minimize lag.
+                            </p>
+                        </section>
+
+                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
+                            <h3 class="text-xl font-semibold text-accent mb-3">Fluid Physics Simulation</h3>
+                            <p class="text-text-muted">
+                                Implements a Smoothed Particle Hydrodynamics (SPH) solver for realistic water, lava, or gas behavior. This allows for dynamic flow, pressure calculation, and buoyancy effects on objects interacting with the fluid volume.
+                            </p>
+                        </section>
+
+                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
+                            <h3 class="text-xl font-semibold text-accent mb-3">Image Application and Editing</h3>
+                            <p class="text-text-muted">
+                                Provides tools to project, apply, and dynamically edit texture maps (Images) onto complex geometry in the workspace, supporting run-time procedural texture generation (e.g., dynamically rendered bullet decals).
+                            </p>
+                        </section>
+                    </div>
+                `
+            },
+            data: {
+                title: "Data Get/Post: Communication Layer",
+                body: `
+                    <div class="space-y-6">
+                        <p class="text-text-light text-lg">
+                            The Data Layer handles all internal and external communication, ensuring secure and efficient transfer of information throughout the application and to remote servers.
+                        </p>
+
+                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
+                            <h3 class="text-xl font-semibold text-accent mb-3">In-Game Data (RemoteFunctions)</h3>
+                            <p class="text-text-muted">
+                                This module abstracts raw RemoteFunction and RemoteEvent calls into a simple, promise-based API. It handles serialization, compression, and error-checking for all critical game state data.
+                            </p>
+                            <pre class="mt-4 p-3 bg-primary-bg rounded text-sm text-green-400">
+-- Example: Fetching player data securely
+local data = sPhys.Data.Get("PlayerStats", playerId)
+                            </pre>
+                        </section>
+
+                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
+                            <h3 class="text-xl font-semibold text-accent mb-3">HTTP Requests and Sends (External Data)</h3>
+                            <p class="text-text-muted">
+                                Manages all outbound and inbound HTTP communication (GET/POST/PUT) to external services. It includes built-in rate-limiting, exponential backoff, and secure header management to interact with APIs safely.
+                            </p>
+                            <div class="mt-4 text-text-muted text-sm space-y-2">
+                                <p><strong>Recommended Usage:</strong> Logging, analytics, and external database synchronization.</p>
+                                <p><strong>Security:</strong> All API keys and secrets should be stored using the internal Secrets Manager API, not hardcoded.</p>
+                            </div>
+                        </section>
+                    </div>
+                `
             }
+        };
+
+        // Function to render the content for the current page
+        function renderPage(pageKey) {
+            const pageData = pages[pageKey] || pages.home; // Default to home
+            
+            let contentHtml = '';
+
+            if (pageKey === 'home') {
+                // Home page handles its own title/header styling within the body
+                contentHtml = pageData.body;
+            } else {
+                // Documentation pages use the standard title block
+                contentHtml = `
+                    <div class="content-container animate-fade-in">
+                        <h2 class="text-4xl lg:text-5xl font-extrabold mb-6 text-text-light border-b border-accent/50 pb-2">
+                            ${pageData.title}
+                        </h2>
+                        ${pageData.body}
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = contentHtml;
+            updateActiveLink(pageKey);
         }
+
+        // Function to update the active link in the sidebar
+        function updateActiveLink(pageKey) {
+            navLinks.forEach(link => {
+                if (link.dataset.page === pageKey) {
+                    link.classList.add('bg-accent', 'text-white', 'font-bold', 'hover:bg-accent/80');
+                    link.classList.remove('text-text-light', 'hover:bg-gray-600/50');
+                } else {
+                    link.classList.remove('bg-accent', 'text-white', 'font-bold', 'hover:bg-accent/80');
+                    link.classList.add('text-text-light', 'hover:bg-gray-600/50');
+                }
+            });
+            // Attach click handlers to dynamically rendered quick links on the home page
+            document.querySelectorAll('.quick-link').forEach(link => {
+                link.onclick = (e) => {
+                    e.preventDefault();
+                    window.location.hash = link.getAttribute('href');
+                };
+            });
+        }
+
+        // Handle hash changes for navigation
+        function handleHashChange() {
+            const hash = window.location.hash.replace('#', '');
+            const pageKey = hash || 'home';
+            renderPage(pageKey);
+        }
+
+        // Initial load and hash listener
+        window.addEventListener('hashchange', handleHashChange);
+        window.onload = handleHashChange;
+
     </script>
 </body>
 </html>
