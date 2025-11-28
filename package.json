@@ -1,18 +1,22 @@
 {
-  "name": "dark-monochromatic-error-page",
-  "version": "1.0.0",
-  "description": "A dark, monochromatic 400 error page with a secret clicker minigame, designed for GitHub Pages deployment.",
+  "name": "sphysics-documentation",
+  "version": "2.1.0",
+  "description": "Next Gen Roblox Engineering documentation site for the sPhysics framework.",
   "main": "index.html",
   "scripts": {
-    "start": "echo 'This is a pure HTML/JS file. Open index.html directly in your browser or deploy to GitHub Pages.'"
+    "start": "live-server --open=index.html",
+    "dev": "npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "html",
-    "tailwindcss",
-    "minigame",
-    "github-pages",
-    "monochromatic"
+    "roblox",
+    "physics",
+    "documentation",
+    "tailwind"
   ],
-  "author": "AI Model",
-  "license": "ISC"
+  "author": "Sandwichmaster28",
+  "license": "ISC",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  }
 }
