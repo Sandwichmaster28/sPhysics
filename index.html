@@ -1,193 +1,884 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>400 - Not Ready</title>
-    <!-- Load Tailwind CSS -->
+    <title>sPhysics | Next Gen Roblox Engineering</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configure Tailwind for a custom font (Inter) -->
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
-                        // Custom ultra-dark background
-                        'deep-void': '#080808',
-                        // Slightly lighter panel background
-                        'dark-panel': '#121212',
-                        // Accent color for interactivity, still dark but distinguishable
-                        'dark-accent': '#333333',
-                    },
-                    keyframes: {
-                        // Custom pulse/glow for the card
-                        subtleGlow: {
-                            '0%, 100%': { boxShadow: '0 0 10px rgba(50, 50, 50, 0.2)' },
-                            '50%': { boxShadow: '0 0 15px rgba(50, 50, 50, 0.4)' },
+                        zinc: {
+                            850: '#1f1f22',
+                            950: '#09090b',
                         }
-                    },
-                    animation: {
-                        'subtle-glow': 'subtleGlow 4s ease-in-out infinite',
                     }
                 }
             }
         }
     </script>
-    <style>
-        /* Apply the custom font and ensure the body fills the viewport */
-        body {
-            font-family: 'Inter', sans-serif;
-            cursor: default;
-        }
 
-        /* Custom scrollbar styling for a darker theme */
+    <!-- React Router -->
+    <script src="https://unpkg.com/history@5/umd/history.production.min.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.production.min.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.production.min.js"></script>
+
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+
+    <style>
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
-
+        ::-webkit-scrollbar-track {
+            background: #09090b; 
+        }
         ::-webkit-scrollbar-thumb {
-            background: #252525;
+            background: #27272a; 
             border-radius: 4px;
         }
-
         ::-webkit-scrollbar-thumb:hover {
-            background: #3a3a3a;
+            background: #3f3f46; 
         }
-
-        ::-webkit-scrollbar-track {
-            background: #080808;
+        body {
+            background-color: #09090b;
+            color: #e4e4e7;
         }
     </style>
 </head>
-<body class="h-screen w-screen flex items-center justify-center bg-deep-void text-gray-300 p-4 overflow-auto">
+<body>
+    <div id="root"></div>
 
-    <!-- Container for the Error Message Card -->
-    <main id="error-card"
-          class="text-center max-w-lg w-full p-8 md:p-12 rounded-xl shadow-2xl bg-dark-panel border border-gray-800 transition-all duration-500 animate-subtle-glow">
-
-        <!-- Status Code -->
-        <h1 id="status-code" class="text-7xl sm:text-8xl lg:text-9xl font-extrabold mb-4 tracking-tight text-gray-500/50 transition-colors duration-500">
-            400
-        </h1>
-
-        <!-- Error Title -->
-        <h2 id="error-title" class="text-3xl sm:text-4xl font-medium mb-6 text-gray-200 transition-colors duration-500">
-            Website can't be accessed.
-        </h2>
-
-        <!-- Reason / Explanation -->
-        <p id="error-reason" class="text-xl sm:text-2xl text-gray-400 italic mb-10 transition-colors duration-500">
-            "Website isn't even ready bruh."
-        </p>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { HashRouter, Routes, Route, Link, useLocation } = ReactRouterDOM;
+        const { motion, AnimatePresence } = window.Motion;
         
-        <!-- === MINIGAME SECTION === -->
-        <div id="minigame-container">
-            <!-- Progress Text -->
-            <p id="progress-text" class="text-sm text-gray-500 mb-2 transition-opacity duration-300">
-                Attempting unauthorized backend access... (0/10)
-            </p>
+        // --- Icon Extraction ---
+        const { 
+            LayoutDashboard, Atom, Music, Shapes, Database, Menu, X, Github, Twitter,
+            Server, Globe, ShieldCheck, ArrowUpRight, ArrowDownLeft,
+            CheckCircle2, AlertTriangle, Cpu,
+            Layers, Droplets, Eraser, Image: ImageIcon,
+            Speaker, Radio, Settings2, Volume2, Wind,
+            ArrowRight, Activity, GitCommit, Terminal
+        } = LucideReact;
 
-            <!-- Hack Button -->
-            <button id="hack-button" onclick="hackSite()"
-                    class="w-full py-3 px-6 rounded-lg font-semibold tracking-wide
-                           bg-dark-accent text-gray-300 hover:bg-gray-500/20 hover:text-green-400
-                           focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-dark-panel
-                           transition-all duration-200 active:scale-[0.98]">
-                [ INITIATE HACK.EXE ]
-            </button>
-        </div>
-
-        <!-- Dynamic Message Box (Hidden by default) -->
-        <div id="message-box" class="mt-8 pt-6 border-t border-gray-700/50 hidden">
-             <p class="text-base text-green-400 font-mono tracking-wider">
-                ACCESS GRANTED. The site is still useless, though. How do you feel, wasting your time?
-             </p>
-        </div>
-
-    </main>
-
-    <!-- JavaScript Game Logic -->
-    <script>
-        // Game state
-        const HACK_TARGET = 10;
-        let hackCount = 0;
-        let isHacked = false;
-
-        // DOM elements
-        const button = document.getElementById('hack-button');
-        const progressText = document.getElementById('progress-text');
-        const messageBox = document.getElementById('message-box');
-        const statusCode = document.getElementById('status-code');
-        const errorTitle = document.getElementById('error-title');
-        const errorReason = document.getElementById('error-reason');
-        const errorCard = document.getElementById('error-card');
-        const minigameContainer = document.getElementById('minigame-container');
-        
-        /**
-         * Converts the progress count into a percentage string for display.
-         * @param {number} count - The current click count.
-         * @returns {string} The formatted progress text.
-         */
-        function getProgressText(count) {
-            const percentage = Math.floor((count / HACK_TARGET) * 100);
-            return `Attempting unauthorized backend access... (${count}/${HACK_TARGET}) - ${percentage}%`;
+        // --- Utils ---
+        function cn(...classes) {
+            return classes.filter(Boolean).join(' ');
         }
 
-        /**
-         * Handles the button click event for the minigame.
-         */
-        function hackSite() {
-            if (isHacked) return; // Prevent further action if already hacked
+        // --- UI Components (Mocked shadcn/ui) ---
+        const Button = ({ children, variant = "default", size = "default", className, ...props }) => {
+            const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none ring-offset-zinc-950 focus-visible:ring-2 focus-visible:ring-zinc-300";
+            const variants = {
+                default: "bg-zinc-50 text-zinc-900 hover:bg-zinc-50/90",
+                destructive: "bg-red-500 text-zinc-50 hover:bg-red-500/90",
+                outline: "border border-zinc-800 bg-zinc-950 hover:bg-zinc-800 hover:text-zinc-50",
+                secondary: "bg-zinc-800 text-zinc-50 hover:bg-zinc-800/80",
+                ghost: "hover:bg-zinc-800 hover:text-zinc-50",
+                link: "text-zinc-50 underline-offset-4 hover:underline",
+            };
+            const sizes = {
+                default: "h-10 px-4 py-2",
+                sm: "h-9 rounded-md px-3",
+                lg: "h-11 rounded-md px-8",
+                icon: "h-10 w-10",
+            };
+            return (
+                <button className={cn(baseStyles, variants[variant], sizes[size], className)} {...props}>
+                    {children}
+                </button>
+            );
+        };
 
-            hackCount++;
-            progressText.textContent = getProgressText(hackCount);
+        const Card = ({ className, children }) => <div className={cn("rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-50 shadow-sm", className)}>{children}</div>;
+        const CardHeader = ({ className, children }) => <div className={cn("flex flex-col space-y-1.5 p-6", className)}>{children}</div>;
+        const CardTitle = ({ className, children }) => <h3 className={cn("text-2xl font-semibold leading-none tracking-tight", className)}>{children}</h3>;
+        const CardContent = ({ className, children }) => <div className={cn("p-6 pt-0", className)}>{children}</div>;
+        const CardFooter = ({ className, children }) => <div className={cn("flex items-center p-6 pt-0", className)}>{children}</div>;
+        const Separator = ({ className }) => <div className={cn("shrink-0 bg-zinc-800 h-[1px] w-full", className)} />;
+        const Badge = ({ children, variant="default", className }) => {
+            const styles = variant === "outline" ? "border border-zinc-800 text-zinc-50" : "bg-zinc-50 text-zinc-900 hover:bg-zinc-50/80";
+            return <div className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-zinc-400 focus:ring-offset-2", styles, className)}>{children}</div>
+        };
 
-            // Give visual feedback on click
-            button.classList.add('animate-none'); // Disable transition briefly
-            button.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                button.style.transform = 'scale(1)';
-            }, 50);
+        // Tabs Components
+        const Tabs = ({ defaultValue, onValueChange, children, className }) => {
+            const [activeTab, setActiveTab] = useState(defaultValue);
+            const handleChange = (val) => {
+                setActiveTab(val);
+                if(onValueChange) onValueChange(val);
+            };
+            
+            // Pass state down to children via cloning
+            const childrenWithProps = React.Children.map(children, child => {
+                if (React.isValidElement(child)) {
+                    return React.cloneElement(child, { activeTab, setActiveTab: handleChange });
+                }
+                return child;
+            });
 
-            // Check for success condition
-            if (hackCount >= HACK_TARGET) {
-                isHacked = true;
-                
-                // 1. Change Button State
-                button.textContent = 'ACCESS GRANTED [LOCKED]';
-                button.classList.remove('bg-dark-accent', 'hover:bg-gray-500/20', 'hover:text-green-400');
-                button.classList.add('bg-green-700/50', 'text-green-400', 'cursor-not-allowed');
-                
-                // 2. Display Success Message
-                messageBox.classList.remove('hidden');
-                
-                // 3. Cinematic UI Change
-                statusCode.textContent = '200';
-                statusCode.classList.remove('text-gray-500/50', 'animate-subtle-glow');
-                statusCode.classList.add('text-green-500/80');
+            return <div className={className}>{childrenWithProps}</div>;
+        };
 
-                errorTitle.textContent = 'Backend Connection Established.';
-                errorReason.textContent = 'Initiating "ready bruh" protocol...';
-                errorReason.classList.remove('text-gray-400');
-                errorReason.classList.add('text-green-300');
-                
-                // Remove initial subtle glow animation and add a brief success pulse
-                errorCard.classList.remove('animate-subtle-glow');
-                errorCard.classList.add('animate-pulse');
-                
-                // Hide progress text
-                progressText.classList.add('opacity-0');
-            } else {
-                // Flash the button text to show progress
-                button.textContent = `[ INITIATE HACK.EXE ] (${HACK_TARGET - hackCount} remaining)`;
-                setTimeout(() => {
-                    button.textContent = '[ INITIATE HACK.EXE ]';
-                }, 100);
-            }
+        const TabsList = ({ children, className, activeTab, setActiveTab }) => {
+            const childrenWithProps = React.Children.map(children, child => {
+                if (React.isValidElement(child)) {
+                    return React.cloneElement(child, { activeTab, setActiveTab });
+                }
+                return child;
+            });
+            return <div className={cn("inline-flex h-10 items-center justify-center rounded-md bg-zinc-800 p-1 text-zinc-400", className)}>{childrenWithProps}</div>;
+        };
+
+        const TabsTrigger = ({ value, children, className, activeTab, setActiveTab }) => {
+            const isActive = activeTab === value;
+            return (
+                <button
+                    onClick={() => setActiveTab(value)}
+                    className={cn(
+                        "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-zinc-950 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300 disabled:pointer-events-none disabled:opacity-50",
+                        isActive ? "bg-zinc-950 text-zinc-50 shadow-sm" : "hover:bg-zinc-800/50 hover:text-zinc-50",
+                        // Handling the specific border-bottom style from the original code
+                        className?.includes('border-b-2') && isActive ? "border-purple-500 text-zinc-100" : "",
+                        className
+                    )}
+                >
+                    {children}
+                </button>
+            );
+        };
+
+        const TabsContent = ({ value, children, className, activeTab }) => {
+            if (activeTab !== value) return null;
+            return (
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className={cn("mt-2 ring-offset-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300", className)}
+                >
+                    {children}
+                </motion.div>
+            );
+        };
+
+
+        // --- Page Components ---
+
+        // 1. Data.js
+        function Data() {
+            return (
+                <div className="max-w-4xl mx-auto space-y-10">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-orange-400 mb-2">
+                            <Database className="w-5 h-5" />
+                            <span className="font-mono text-sm uppercase tracking-wider">Network Module</span>
+                        </div>
+                        <h1 className="text-4xl font-bold text-zinc-100">Data Get/Post</h1>
+                        <p className="text-xl text-zinc-400 leading-relaxed">
+                            The central nervous system for information flow. Manages internal game replication via RemoteFunctions and external communication via secure HTTP requests.
+                        </p>
+                    </div>
+
+                    <Separator className="bg-zinc-800" />
+
+                    <div className="grid md:grid-cols-2 gap-8">
+                        {/* Game Data Section */}
+                        <div className="space-y-6">
+                            <Card className="bg-zinc-900/30 border-zinc-800 h-full">
+                                <CardHeader>
+                                    <CardTitle className="text-zinc-100 flex items-center gap-2">
+                                        <Server className="w-5 h-5 text-orange-500" />
+                                        Internal Game Data
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <p className="text-zinc-400 text-sm leading-relaxed">
+                                        Handles replication between Client and Server using optimized RemoteFunctions. Data is compressed before transmission to reduce bandwidth usage.
+                                    </p>
+
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 p-3 bg-zinc-950 rounded border border-zinc-800">
+                                            <ArrowUpRight className="w-4 h-4 text-zinc-500" />
+                                            <div>
+                                                <div className="text-xs text-zinc-500 font-mono">POST (Client → Server)</div>
+                                                <div className="text-zinc-300 text-sm">PlayerData.Save(Slot1)</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 p-3 bg-zinc-950 rounded border border-zinc-800">
+                                            <ArrowDownLeft className="w-4 h-4 text-zinc-500" />
+                                            <div>
+                                                <div className="text-xs text-zinc-500 font-mono">GET (Server → Client)</div>
+                                                <div className="text-zinc-300 text-sm">GlobalLeaderboard.Fetch()</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        {/* HTTP Section */}
+                        <div className="space-y-6">
+                            <Card className="bg-zinc-900/30 border-zinc-800 h-full">
+                                <CardHeader>
+                                    <CardTitle className="text-zinc-100 flex items-center gap-2">
+                                        <Globe className="w-5 h-5 text-blue-500" />
+                                        External HTTP Requests
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <p className="text-zinc-400 text-sm leading-relaxed">
+                                        Interfaces with external APIs (Discord Webhooks, Trello, Custom DBs). Includes built-in rate limiting and retry logic for failed requests.
+                                    </p>
+
+                                    <div className="p-4 bg-zinc-950 rounded border border-zinc-800">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <ShieldCheck className="w-4 h-4 text-green-500" />
+                                            <span className="text-sm font-medium text-zinc-200">Security Protocol</span>
+                                        </div>
+                                        <p className="text-xs text-zinc-500">
+                                            All HTTP requests are routed through a proxy server to hide the game instance IP and prevent DDoS attacks.
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+
+                    {/* Code Snippet */}
+                    <div className="space-y-4 pt-6">
+                        <h3 className="text-zinc-300 font-medium">API Usage Example</h3>
+                        <div className="bg-zinc-950 border border-zinc-800 rounded-lg p-4 overflow-x-auto">
+                            <pre className="text-xs font-mono text-zinc-400">
+<span className="text-orange-400">local</span> DataService = require(Modules.Data)
+
+<span className="text-zinc-500">-- GET Data</span>
+<span className="text-orange-400">local</span> profile = DataService:Get(<span className="text-green-400">"Player_123"</span>, <span className="text-green-400">"Inventory"</span>)
+
+<span className="text-zinc-500">-- POST HTTP</span>
+DataService:PostHTTP(<span className="text-green-400">"https://api.example.com/log"</span>, &#123;
+  event = <span className="text-green-400">"ServerStart"</span>,
+  timestamp = os.time()
+&#125;)</pre>
+                        </div>
+                    </div>
+                </div>
+            );
         }
+
+        // 2. Physics.js
+        function Physics() {
+            return (
+                <div className="max-w-4xl mx-auto space-y-10">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-blue-400 mb-2">
+                            <Atom className="w-5 h-5" />
+                            <span className="font-mono text-sm uppercase tracking-wider">Core Module</span>
+                        </div>
+                        <h1 className="text-4xl font-bold text-zinc-100">Physics Engine</h1>
+                        <p className="text-xl text-zinc-400 leading-relaxed">
+                            A parallel processing layer that runs alongside the default Roblox Physics engine, providing real-time error correction and granular control over environmental constants.
+                        </p>
+                    </div>
+
+                    <Separator className="bg-zinc-800" />
+
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <Card className="bg-zinc-900/30 border-zinc-800">
+                            <CardHeader>
+                                <CardTitle className="text-zinc-100 flex items-center gap-2">
+                                    <CheckCircle2 className="w-5 h-5 text-green-500" />
+                                    Parallel Correction
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="text-zinc-400 text-sm leading-6">
+                                The engine monitors rigid body states every frame. When the default solver introduces micro-errors (floating point drift), our engine instantly snaps the object back to its mathematically correct trajectory without visual stuttering.
+                            </CardContent>
+                        </Card>
+
+                        <Card className="bg-zinc-900/30 border-zinc-800">
+                            <CardHeader>
+                                <CardTitle className="text-zinc-100 flex items-center gap-2">
+                                    <Cpu className="w-5 h-5 text-blue-500" />
+                                    Workspace Control
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="text-zinc-400 text-sm leading-6">
+                                Direct override capability for global Workspace settings. Manipulate Gravity, AirDensity, and GlobalFriction in real-time via the API, bypassing standard replication delays.
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-semibold text-zinc-200">Implementation Details</h2>
+                        <Card className="bg-zinc-950 border-zinc-800 font-mono text-sm">
+                            <div className="flex border-b border-zinc-800">
+                                <div className="px-4 py-2 bg-zinc-900 text-zinc-300 border-r border-zinc-800">PhysicsService.lua</div>
+                            </div>
+                            <CardContent className="p-6 text-zinc-400">
+                                <p className="mb-4 text-zinc-500">// Example: Initializing the correction loop</p>
+                                <div className="space-y-1">
+                                    <p><span className="text-purple-400">local</span> Physics <span className="text-purple-400">=</span> require(game.ServerStorage.Modules.Physics)</p>
+                                    <p><span className="text-purple-400">local</span> CorrectionRate <span className="text-purple-400">=</span> <span className="text-orange-400">60</span> <span className="text-zinc-600">-- Hz</span></p>
+                                    <br/>
+                                    <p>Physics.StartParallelProcess(<span className="text-purple-400">function</span>(delta)</p>
+                                    <p className="pl-4"><span className="text-purple-400">local</span> drift <span className="text-purple-400">=</span> Workspace.Gravity <span className="text-purple-400">-</span> Physics.ExpectedGravity</p>
+                                    <p className="pl-4"><span className="text-purple-400">if</span> math.abs(drift) <span className="text-purple-400">{'>'}</span> <span className="text-orange-400">0.001</span> <span className="text-purple-400">then</span></p>
+                                    <p className="pl-8">Physics.ForceCorrect(Workspace, drift)</p>
+                                    <p className="pl-4"><span className="text-purple-400">end</span></p>
+                                    <p><span className="text-purple-400">end</span>)</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 flex gap-4">
+                        <AlertTriangle className="w-6 h-6 text-yellow-500 shrink-0" />
+                        <div>
+                            <h4 className="text-zinc-200 font-medium mb-1">Resource Usage Warning</h4>
+                            <p className="text-sm text-zinc-500">
+                                Enabling full correction mode on over 500 active rigid bodies may impact server heartbeat.
+                                It is recommended to use <span className="bg-zinc-800 px-1 py-0.5 rounded text-zinc-300">Zone-Based Correction</span> for large maps.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // 3. Geometry.js
+        function Geometry() {
+            return (
+                <div className="max-w-4xl mx-auto space-y-10">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-purple-400 mb-2">
+                            <Shapes className="w-5 h-5" />
+                            <span className="font-mono text-sm uppercase tracking-wider">Geometry Module</span>
+                        </div>
+                        <h1 className="text-4xl font-bold text-zinc-100">Geometry Solver</h1>
+                        <p className="text-xl text-zinc-400 leading-relaxed">
+                            The calculation powerhouse for complex mesh interactions. Handling everything from structural integrity during destruction to fluid simulation and dynamic image application.
+                        </p>
+                    </div>
+
+                    <Separator className="bg-zinc-800" />
+
+                    <Tabs defaultValue="destruction" className="w-full">
+                        <TabsList className="w-full justify-start bg-transparent border-b border-zinc-800 p-0 h-auto gap-6 rounded-none">
+                            <TabsTrigger 
+                                value="destruction" 
+                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-purple-500 data-[state=active]:bg-transparent pb-3 px-0 text-zinc-500 data-[state=active]:text-zinc-100"
+                            >
+                                Destruction Physics
+                            </TabsTrigger>
+                            <TabsTrigger 
+                                value="image" 
+                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-purple-500 data-[state=active]:bg-transparent pb-3 px-0 text-zinc-500 data-[state=active]:text-zinc-100"
+                            >
+                                Image & Projection
+                            </TabsTrigger>
+                            <TabsTrigger 
+                                value="fluid" 
+                                className="rounded-none border-b-2 border-transparent data-[state=active]:border-purple-500 data-[state=active]:bg-transparent pb-3 px-0 text-zinc-500 data-[state=active]:text-zinc-100"
+                            >
+                                Fluid Dynamics
+                            </TabsTrigger>
+                        </TabsList>
+
+                        <div className="mt-8">
+                            <TabsContent value="destruction" className="space-y-6">
+                                <div className="grid md:grid-cols-2 gap-8">
+                                    <div className="space-y-4">
+                                        <h3 className="text-2xl font-semibold text-zinc-200">Real-time CSG</h3>
+                                        <p className="text-zinc-400 leading-7">
+                                            The solver uses optimized Constructive Solid Geometry (CSG) to carve meshes in real-time. Unlike standard methods, our solver pre-calculates fracture points to minimize server lag during explosions.
+                                        </p>
+                                        <ul className="space-y-2">
+                                            <li className="flex items-center gap-2 text-zinc-300 text-sm">
+                                                <Eraser className="w-4 h-4 text-purple-500" />
+                                                <span>Procedural debris generation</span>
+                                            </li>
+                                            <li className="flex items-center gap-2 text-zinc-300 text-sm">
+                                                <Layers className="w-4 h-4 text-purple-500" />
+                                                <span>Structural load-bearing calculation</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <Card className="bg-zinc-950 border-zinc-800 flex items-center justify-center min-h-[200px]">
+                                        <div className="text-center space-y-2">
+                                            <Shapes className="w-12 h-12 text-zinc-800 mx-auto" />
+                                            <p className="text-xs text-zinc-600 font-mono">CSG VISUALIZER OFFLINE</p>
+                                        </div>
+                                    </Card>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="image" className="space-y-6">
+                                <div className="flex items-start gap-6">
+                                    <div className="p-4 bg-zinc-900 rounded-xl border border-zinc-800 shrink-0">
+                                        <ImageIcon className="w-8 h-8 text-zinc-400" />
+                                    </div>
+                                    <div className="space-y-3">
+                                        <h3 className="text-xl font-semibold text-zinc-200">Dynamic Decals & Editing</h3>
+                                        <p className="text-zinc-400">
+                                            Allows for runtime editing of textures on geometry. This includes applying spray paints, bullet holes that wrap around curved surfaces, and projecting images onto complex UV maps without external tools.
+                                        </p>
+                                    </div>
+                                </div>
+                            </TabsContent>
+
+                            <TabsContent value="fluid" className="space-y-6">
+                                <div className="flex items-start gap-6">
+                                    <div className="p-4 bg-zinc-900 rounded-xl border border-zinc-800 shrink-0">
+                                        <Droplets className="w-8 h-8 text-blue-400" />
+                                    </div>
+                                    <div className="space-y-3">
+                                        <h3 className="text-xl font-semibold text-zinc-200">Particle-Based Fluids</h3>
+                                        <p className="text-zinc-400">
+                                            Simulates fluid viscosity and surface tension. The Geometry Solver calculates container volume and displaces fluid particles accordingly when objects enter the liquid.
+                                        </p>
+                                    </div>
+                                </div>
+                            </TabsContent>
+                        </div>
+                    </Tabs>
+                </div>
+            );
+        }
+
+        // 4. Sound.js
+        function Sound() {
+            const [mode, setMode] = useState('custom');
+
+            return (
+                <div className="max-w-4xl mx-auto space-y-10">
+                    <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-emerald-400 mb-2">
+                            <Music className="w-5 h-5" />
+                            <span className="font-mono text-sm uppercase tracking-wider">Audio Module</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                            <div>
+                                <h1 className="text-4xl font-bold text-zinc-100">Sound Engine</h1>
+                                <p className="text-xl text-zinc-400 leading-relaxed mt-4 max-w-2xl">
+                                    A dual-mode audio system handling procedural impact sounds, environmental ambience, and dynamic footstep generation.
+                                </p>
+                            </div>
+                            <div className="hidden md:block">
+                                <div className="bg-zinc-900 p-4 rounded-xl border border-zinc-800 flex flex-col gap-2 w-64">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-xs font-mono text-zinc-500">ACTIVE API</span>
+                                        <div className={`w-2 h-2 rounded-full ${mode === 'custom' ? 'bg-emerald-500' : 'bg-blue-500'}`}></div>
+                                    </div>
+                                    <div className="font-bold text-zinc-200">{mode === 'custom' ? 'Custom Raycast' : 'Roblox Default'}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <Separator className="bg-zinc-800" />
+
+                    <Card className="bg-zinc-950 border-zinc-800">
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-zinc-200">API Selection</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <Tabs defaultValue="custom" className="w-full" onValueChange={setMode}>
+                                <TabsList className="grid w-full grid-cols-2 bg-zinc-900">
+                                    <TabsTrigger value="default">Default API (Experimental)</TabsTrigger>
+                                    <TabsTrigger value="custom">Custom API (Raycasted)</TabsTrigger>
+                                </TabsList>
+
+                                <TabsContent value="default" className="mt-6 space-y-4">
+                                    <div className="flex gap-4 p-4 bg-blue-950/20 border border-blue-900/50 rounded-lg">
+                                        <Speaker className="w-6 h-6 text-blue-400 shrink-0 mt-1" />
+                                        <div>
+                                            <h3 className="font-medium text-blue-400">Roblox Native Integration</h3>
+                                            <p className="text-sm text-zinc-400 mt-1">
+                                                Uses Roblox's built-in experimental audio API. Best for performance on lower-end devices but lacks accurate occlusion and real-time echo calculation.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </TabsContent>
+
+                                <TabsContent value="custom" className="mt-6 space-y-4">
+                                    <div className="flex gap-4 p-4 bg-emerald-950/20 border border-emerald-900/50 rounded-lg">
+                                        <Radio className="w-6 h-6 text-emerald-400 shrink-0 mt-1" />
+                                        <div>
+                                            <h3 className="font-medium text-emerald-400">Raycasted Propagation</h3>
+                                            <p className="text-sm text-zinc-400 mt-1">
+                                                The Sound Engine's proprietary code. Casts rays from the source to the listener to calculate muffling, reverb, and echo in real-time based on material density.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
+                        </CardContent>
+                    </Card>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <div className="bg-zinc-900/30 p-6 rounded-xl border border-zinc-800 space-y-3">
+                            <div className="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center">
+                                <Volume2 className="w-5 h-5 text-zinc-300" />
+                            </div>
+                            <h3 className="font-bold text-zinc-200">Impact Sounds</h3>
+                            <p className="text-sm text-zinc-500">
+                                Calculates velocity and material type upon collision to play the correct impact or breaking sound (Glass, Wood, Metal).
+                            </p>
+                        </div>
+                        <div className="bg-zinc-900/30 p-6 rounded-xl border border-zinc-800 space-y-3">
+                            <div className="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center">
+                                <Settings2 className="w-5 h-5 text-zinc-300" />
+                            </div>
+                            <h3 className="font-bold text-zinc-200">Footstep System</h3>
+                            <p className="text-sm text-zinc-500">
+                                Dynamic texture detection under character feet. Supports varying walk speeds and gear rattle layers.
+                            </p>
+                        </div>
+                        <div className="bg-zinc-900/30 p-6 rounded-xl border border-zinc-800 space-y-3">
+                            <div className="w-10 h-10 bg-zinc-800 rounded-lg flex items-center justify-center">
+                                <Wind className="w-5 h-5 text-zinc-300" />
+                            </div>
+                            <h3 className="font-bold text-zinc-200">Ambient & Wind</h3>
+                            <p className="text-sm text-zinc-500">
+                                Procedural wind that reacts to altitude and enclosed spaces. Zone-based ambient tracks with smooth crossfading.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // 5. Home.js
+        function Home() {
+            // MOCKED DATA - Replaces base44 backend
+            const isLoading = false;
+            const updates = [
+                { id: 1, version: "2.1.0", title: "Physics Core Update", description: "Improved parallel processing stability and reduced memory leaks in the collision solver.", date: "2023-11-20", type: "major" },
+                { id: 2, version: "2.0.5", title: "Sound Patch", description: "Fixed audio occlusion bugs where walls were being ignored by raycasts.", date: "2023-11-10", type: "patch" },
+                { id: 3, version: "2.0.0", title: "Next Gen Release", description: "Complete rewrite of the geometry solver. Added fluid dynamics.", date: "2023-10-15", type: "major" }
+            ];
+
+            const features = [
+                { title: "Parallel Physics", desc: "Real-time error correction for standard rigid body simulation.", icon: Atom, link: "/Physics", color: "text-blue-400" },
+                { title: "Sound Engine", desc: "Raycasted audio propagation with dual API support.", icon: Music, link: "/Sound", color: "text-emerald-400" },
+                { title: "Geometry Solver", desc: "Advanced fluid dynamics and destruction physics.", icon: Shapes, link: "/Geometry", color: "text-purple-400" },
+                { title: "Data I/O", desc: "Secure RemoteFunction handling and HTTP networking.", icon: Database, link: "/Data", color: "text-orange-400" }
+            ];
+
+            return (
+                <div className="space-y-12">
+                    {/* Hero Section */}
+                    <div className="flex flex-col md:flex-row gap-8 items-center justify-between py-8">
+                        <div className="space-y-4 max-w-2xl">
+                            <div className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-400">
+                                <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>
+                                v2.1.0 Stable Build
+                            </div>
+                            <h1 className="text-5xl md:text-6xl font-bold text-zinc-50 tracking-tight">
+                                Next Gen <br />
+                                <span className="text-zinc-400">Roblox Engineering.</span>
+                            </h1>
+                            <p className="text-zinc-400 text-lg font-semibold leading-relaxed max-w-lg">
+                                Doing what DAVID "Doesn't wanna" do.
+                            </p>
+                            <div className="flex gap-4 pt-2">
+                                <Link to="/Physics">
+                                    <Button className="bg-zinc-100 text-zinc-950 hover:bg-zinc-300 font-semibold h-12 px-6">Start Documentation</Button>
+                                </Link>
+                                <a href="https://github.com/Sandwichmaster28/sPhysics" target="_blank" rel="noopener noreferrer">
+                                    <Button variant="outline" className="border-zinc-700 text-zinc-300 hover:bg-zinc-900 h-12 px-6">View Source</Button>
+                                </a>
+                            </div>
+                        </div>
+                        <div className="w-full md:w-1/3 h-64 bg-gradient-to-br from-zinc-900 to-zinc-950 rounded-2xl border border-zinc-800 flex items-center justify-center relative overflow-hidden group">
+                            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-700 via-zinc-950 to-zinc-950"></div>
+                            <Terminal className="w-24 h-24 text-zinc-800 group-hover:text-zinc-700 transition-colors duration-500" />
+                        </div>
+                    </div>
+
+                    {/* Quick Links Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {features.map((feature) => (
+                            <Link key={feature.title} to={feature.link}>
+                                <Card className="bg-zinc-900/50 border-zinc-800 hover:border-zinc-600 transition-all duration-300 h-full group">
+                                    <CardContent className="p-6 flex flex-col gap-4">
+                                        <div className="w-10 h-10 rounded-lg bg-zinc-950 border border-zinc-800 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            <feature.icon className={`w-5 h-5 ${feature.color}`} />
+                                        </div>
+                                        <div>
+                                            <h3 className="font-semibold text-zinc-100 mb-1">{feature.title}</h3>
+                                            <p className="text-sm text-zinc-500 leading-snug">{feature.desc}</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* Updates Section */}
+                    <div className="grid md:grid-cols-3 gap-8">
+                        <div className="md:col-span-2 space-y-6">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
+                                    <Activity className="w-5 h-5 text-zinc-500" />
+                                    Current Updates
+                                </h2>
+                                <Badge variant="outline" className="border-zinc-700 text-zinc-400">Changelog</Badge>
+                            </div>
+                            <div className="space-y-4">
+                                {isLoading ? Array(3).fill(0).map((_, i) => <div key={i} className="h-24 bg-zinc-900/50 rounded-lg animate-pulse" />) : 
+                                updates?.map((update) => (
+                                    <Card key={update.id} className="bg-zinc-950 border-zinc-800 hover:bg-zinc-900/30 transition-colors">
+                                        <CardContent className="p-5">
+                                            <div className="flex items-start justify-between mb-2">
+                                                <div className="flex items-center gap-3">
+                                                    <Badge className={`${update.type === 'major' ? 'bg-zinc-100 text-zinc-950' : update.type === 'minor' ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-900 text-zinc-500 border-zinc-800'}`}>
+                                                        {update.version}
+                                                    </Badge>
+                                                    <span className="text-zinc-500 text-sm font-mono">{update.date}</span>
+                                                </div>
+                                            </div>
+                                            <h3 className="text-lg font-medium text-zinc-200 mb-2">{update.title}</h3>
+                                            <p className="text-zinc-500 text-sm">{update.description}</p>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <Card className="bg-zinc-900/20 border-zinc-800 h-full">
+                                <CardHeader>
+                                    <CardTitle className="text-zinc-200 text-lg flex items-center gap-2">
+                                        <GitCommit className="w-4 h-4" />
+                                        System Status
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-zinc-400">Physics Engine</span>
+                                            <span className="text-green-400">Operational</span>
+                                        </div>
+                                        <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+                                            <div className="h-full bg-green-500/50 w-full" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-zinc-400">Sound API</span>
+                                            <span className="text-green-400">Operational</span>
+                                        </div>
+                                        <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+                                            <div className="h-full bg-green-500/50 w-full" />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-zinc-400">Data Relay</span>
+                                            <span className="text-yellow-400">High Latency</span>
+                                        </div>
+                                        <div className="h-1 w-full bg-zinc-900 rounded-full overflow-hidden">
+                                            <div className="h-full bg-yellow-500/50 w-3/4" />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                                <CardFooter>
+                                    <Button className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200">View Full Report</Button>
+                                </CardFooter>
+                            </Card>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // 6. Layout.js
+        function Layout({ children }) {
+            const location = useLocation();
+            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+            const navItems = [
+                { name: 'Home', icon: LayoutDashboard, path: '/' },
+                { name: 'Physics', icon: Atom, path: '/Physics' },
+                { name: 'Sound', icon: Music, path: '/Sound' },
+                { name: 'Geometry', icon: Shapes, path: '/Geometry' },
+                { name: 'Data I/O', icon: Database, path: '/Data' },
+            ];
+
+            const isActive = (path) => {
+                return location.pathname === path;
+            };
+
+            return (
+                <div className="min-h-screen bg-zinc-950 text-zinc-300 font-sans selection:bg-zinc-700 selection:text-white">
+                    {/* Top Navigation Bar */}
+                    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md">
+                        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <Link to="/" className="relative w-14 h-14 flex items-center justify-center group">
+                                    <svg viewBox="0 0 100 100" className="w-full h-full text-zinc-100" fill="none" stroke="currentColor" strokeWidth="2">
+                                        <path d="M20 20 L80 20 L80 80 L20 80 Z" className="opacity-90" />
+                                        <path d="M30 10 L90 10 L90 70 L30 70 Z" className="opacity-40" />
+                                        <path d="M20 20 L30 10 M80 20 L90 10 M80 80 L90 70 M20 80 L30 70" className="opacity-40" />
+                                        <circle cx="20" cy="20" r="3" fill="currentColor" />
+                                        <circle cx="80" cy="20" r="3" fill="currentColor" />
+                                        <circle cx="80" cy="80" r="3" fill="currentColor" />
+                                        <circle cx="20" cy="80" r="3" fill="currentColor" />
+                                        <circle cx="30" cy="10" r="3" fill="currentColor" className="opacity-50" />
+                                        <circle cx="90" cy="10" r="3" fill="currentColor" className="opacity-50" />
+                                        <circle cx="90" cy="70" r="3" fill="currentColor" className="opacity-50" />
+                                        <circle cx="30" cy="70" r="3" fill="currentColor" className="opacity-50" />
+                                    </svg>
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <span className="text-[10px] font-bold bg-zinc-950 text-zinc-100 px-1 border border-zinc-800 rounded font-mono tracking-tighter">sPhys</span>
+                                    </div>
+                                </Link>
+                                <span className="font-bold text-zinc-100 tracking-tight text-lg -ml-1">sPhysics</span>
+                            </div>
+
+                            {/* Desktop Menu */}
+                            <div className="hidden md:flex items-center gap-1">
+                                {navItems.map((item) => (
+                                    <Link key={item.name} to={item.path}>
+                                        <Button
+                                            variant="ghost"
+                                            className={`flex items-center gap-2 px-4 h-9 rounded-md transition-all duration-200 ${isActive(item.path) ? 'bg-zinc-800 text-zinc-50 font-medium' : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900'}`}
+                                        >
+                                            <item.icon className="w-4 h-4" />
+                                            {item.name}
+                                        </Button>
+                                    </Link>
+                                ))}
+                            </div>
+
+                            <div className="hidden md:flex items-center gap-4">
+                                <div className="h-4 w-px bg-zinc-800" />
+                                <div className="flex gap-2">
+                                    <a href="https://github.com/Sandwichmaster28/sPhysics" target="_blank" rel="noopener noreferrer">
+                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-zinc-100">
+                                            <Github className="w-4 h-4" />
+                                        </Button>
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* Mobile Toggle */}
+                            <div className="md:hidden">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                    className="text-zinc-100"
+                                >
+                                    {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                                </Button>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Mobile Menu Overlay */}
+                    <AnimatePresence>
+                        {isMobileMenuOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="fixed inset-0 z-40 pt-20 px-6 bg-zinc-950 md:hidden"
+                            >
+                                <div className="flex flex-col gap-2">
+                                    {navItems.map((item) => (
+                                        <Link
+                                            key={item.name}
+                                            to={item.path}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            <Button
+                                                variant="ghost"
+                                                className={`w-full justify-start gap-3 h-12 text-lg ${isActive(item.path) ? 'bg-zinc-800 text-zinc-50' : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900'}`}
+                                            >
+                                                <item.icon className="w-5 h-5" />
+                                                {item.name}
+                                            </Button>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Main Content */}
+                    <main className="pt-24 pb-20 px-6 max-w-7xl mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4 }}
+                        >
+                            {children}
+                        </motion.div>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="border-t border-zinc-900 mt-auto py-12 bg-zinc-950">
+                        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-zinc-500 text-sm">
+                            <p>© 2023 sPhysics. All rights reserved.</p>
+                            <div className="flex gap-6">
+                                <span className="hover:text-zinc-300 cursor-pointer">Documentation</span>
+                                <span className="hover:text-zinc-300 cursor-pointer">API Reference</span>
+                                <span className="hover:text-zinc-300 cursor-pointer">Status</span>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        // --- Main App ---
+        function App() {
+            return (
+                <HashRouter>
+                    <Layout>
+                        <Routes>
+                            <Route path="/" element={<Home />} />
+                            <Route path="/Physics" element={<Physics />} />
+                            <Route path="/Sound" element={<Sound />} />
+                            <Route path="/Geometry" element={<Geometry />} />
+                            <Route path="/Data" element={<Data />} />
+                        </Routes>
+                    </Layout>
+                </HashRouter>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
