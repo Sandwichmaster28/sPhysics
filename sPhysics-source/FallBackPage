@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>400 - Not Ready</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for a custom font (Inter) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        // Custom ultra-dark background
+                        'deep-void': '#080808',
+                        // Slightly lighter panel background
+                        'dark-panel': '#121212',
+                        // Accent color for interactivity, still dark but distinguishable
+                        'dark-accent': '#333333',
+                    },
+                    keyframes: {
+                        // Custom pulse/glow for the card
+                        subtleGlow: {
+                            '0%, 100%': { boxShadow: '0 0 10px rgba(50, 50, 50, 0.2)' },
+                            '50%': { boxShadow: '0 0 15px rgba(50, 50, 50, 0.4)' },
+                        }
+                    },
+                    animation: {
+                        'subtle-glow': 'subtleGlow 4s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Apply the custom font and ensure the body fills the viewport */
+        body {
+            font-family: 'Inter', sans-serif;
+            cursor: default;
+        }
+
+        /* Custom scrollbar styling for a darker theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #252525;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a3a3a;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #080808;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center bg-deep-void text-gray-300 p-4 overflow-auto">
+
+    <!-- Container for the Error Message Card -->
+    <main id="error-card"
+          class="text-center max-w-lg w-full p-8 md:p-12 rounded-xl shadow-2xl bg-dark-panel border border-gray-800 transition-all duration-500 animate-subtle-glow">
+
+        <!-- Status Code -->
+        <h1 id="status-code" class="text-7xl sm:text-8xl lg:text-9xl font-extrabold mb-4 tracking-tight text-gray-500/50 transition-colors duration-500">
+            400
+        </h1>
+
+        <!-- Error Title -->
+        <h2 id="error-title" class="text-3xl sm:text-4xl font-medium mb-6 text-gray-200 transition-colors duration-500">
+            Website can't be accessed.
+        </h2>
+
+        <!-- Reason / Explanation -->
+        <p id="error-reason" class="text-xl sm:text-2xl text-gray-400 italic mb-10 transition-colors duration-500">
+            "Website isn't even ready bruh."
+        </p>
+        
+        <!-- === MINIGAME SECTION === -->
+        <div id="minigame-container">
+            <!-- Progress Text -->
+            <p id="progress-text" class="text-sm text-gray-500 mb-2 transition-opacity duration-300">
+                Attempting unauthorized backend access... (0/10)
+            </p>
+
+            <!-- Hack Button -->
+            <button id="hack-button" onclick="hackSite()"
+                    class="w-full py-3 px-6 rounded-lg font-semibold tracking-wide
+                           bg-dark-accent text-gray-300 hover:bg-gray-500/20 hover:text-green-400
+                           focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-dark-panel
+                           transition-all duration-200 active:scale-[0.98]">
+                [ INITIATE HACK.EXE ]
+            </button>
+        </div>
+
+        <!-- Dynamic Message Box (Hidden by default) -->
+        <div id="message-box" class="mt-8 pt-6 border-t border-gray-700/50 hidden">
+             <p class="text-base text-green-400 font-mono tracking-wider">
+                ACCESS GRANTED. The site is still useless, though. How do you feel, wasting your time?
+             </p>
+        </div>
+
+    </main>
+
+    <!-- JavaScript Game Logic -->
+    <script>
+        // Game state
+        const HACK_TARGET = 10;
+        let hackCount = 0;
+        let isHacked = false;
+
+        // DOM elements
+        const button = document.getElementById('hack-button');
+        const progressText = document.getElementById('progress-text');
+        const messageBox = document.getElementById('message-box');
+        const statusCode = document.getElementById('status-code');
+        const errorTitle = document.getElementById('error-title');
+        const errorReason = document.getElementById('error-reason');
+        const errorCard = document.getElementById('error-card');
+        const minigameContainer = document.getElementById('minigame-container');
+        
+        /**
+         * Converts the progress count into a percentage string for display.
+         * @param {number} count - The current click count.
+         * @returns {string} The formatted progress text.
+         */
+        function getProgressText(count) {
+            const percentage = Math.floor((count / HACK_TARGET) * 100);
+            return `Attempting unauthorized backend access... (${count}/${HACK_TARGET}) - ${percentage}%`;
+        }
+
+        /**
+         * Handles the button click event for the minigame.
+         */
+        function hackSite() {
+            if (isHacked) return; // Prevent further action if already hacked
+
+            hackCount++;
+            progressText.textContent = getProgressText(hackCount);
+
+            // Give visual feedback on click
+            button.classList.add('animate-none'); // Disable transition briefly
+            button.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 50);
+
+            // Check for success condition
+            if (hackCount >= HACK_TARGET) {
+                isHacked = true;
+                
+                // 1. Change Button State
+                button.textContent = 'ACCESS GRANTED [LOCKED]';
+                button.classList.remove('bg-dark-accent', 'hover:bg-gray-500/20', 'hover:text-green-400');
+                button.classList.add('bg-green-700/50', 'text-green-400', 'cursor-not-allowed');
+                
+                // 2. Display Success Message
+                messageBox.classList.remove('hidden');
+                
+                // 3. Cinematic UI Change
+                statusCode.textContent = '200';
+                statusCode.classList.remove('text-gray-500/50', 'animate-subtle-glow');
+                statusCode.classList.add('text-green-500/80');
+
+                errorTitle.textContent = 'Backend Connection Established.';
+                errorReason.textContent = 'Initiating "ready bruh" protocol...';
+                errorReason.classList.remove('text-gray-400');
+                errorReason.classList.add('text-green-300');
+                
+                // Remove initial subtle glow animation and add a brief success pulse
+                errorCard.classList.remove('animate-subtle-glow');
+                errorCard.classList.add('animate-pulse');
+                
+                // Hide progress text
+                progressText.classList.add('opacity-0');
+            } else {
+                // Flash the button text to show progress
+                button.textContent = `[ INITIATE HACK.EXE ] (${HACK_TARGET - hackCount} remaining)`;
+                setTimeout(() => {
+                    button.textContent = '[ INITIATE HACK.EXE ]';
+                }, 100);
+            }
+        }
+    </script>
+</body>
+</html>
