@@ -174,44 +174,22 @@ local function Deploy(ImportedAsset, UseStarterCharacter, UseStarterCharacterScr
     print("StarterCharacter:", UseStarterCharacter)
     print("StarterCharacterScripts:", UseStarterCharacterScripts)
 
-    -- Find the main sPhysics folder, even if inside a Model named "Model"
-    local sPhysicsFolder = nil
-
-    -- First, look for a Model named "Model" inside the asset
-    local assetRoot = ImportedAsset
-    local modelContainer = nil
-    for i, obj in assetRoot:GetChildren() do
-        if obj:IsA("Model") and obj.Name == "Model" then
+    -- Find the main sPhysics folder inside the Model
+    local modelContainer = ImportedAsset
+    for i, obj in modelContainer:GetChildren() do
+        if obj:IsA("Folder") and obj.Name == "sPhysics | V 0.1.5 | Thanks for choosing sPhys." then
             modelContainer = obj
             break
         end
     end
 
-    -- If found, look for sPhysics folder inside it
-    if modelContainer then
-        for i, obj in modelContainer:GetChildren() do
-            if obj:IsA("Folder") and obj.Name == "sPhysics" then
-                sPhysicsFolder = obj
-                break
-            end
-        end
-    else
-        -- Fallback: look for sPhysics folder directly in asset
-        for i, obj in assetRoot:GetChildren() do
-            if obj:IsA("Folder") and obj.Name == "sPhysics" then
-                sPhysicsFolder = obj
-                break
-            end
-        end
-    end
-
-    if not sPhysicsFolder then
+    if not modelContainer then
         warn("sPhysics folder not found in asset!")
         return
     end
 
     -- Move contents of sPhysics subfolders to their respective services
-    for i, subfolder in sPhysicsFolder:GetChildren() do
+    for i, subfolder in modelContainer:GetChildren() do
         if subfolder:IsA("Folder") then
             if subfolder.Name == "StarterPlayer" then
                 -- Move StarterCharacter model if present
@@ -251,6 +229,14 @@ local function Deploy(ImportedAsset, UseStarterCharacter, UseStarterCharacterScr
                     subfolder:Destroy()
                 end
             end
+        end
+    end
+
+    -- Move DefaultRig to ReplicatedStorage
+    for i, obj in modelContainer:GetChildren() do
+        if obj:IsA("Model") and obj.Name == "DefaultRig" then
+            obj.Parent = game:GetService("ReplicatedStorage")
+            break
         end
     end
 
