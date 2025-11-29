@@ -2,6 +2,14 @@
 local game = game
 local StarterGui = game:GetService("StarterGui")
 
+
+if game:FindFirstChild("sPhysics_Verified") then
+	print("sPhysics already installed. Skipping.")
+	script.Enabled=false or script:Destroy() or error("sPhysics is already installed.")
+	else
+	print("Installing sPhysics V0.15...")
+end
+
 -- Utility for debugging asset contents
 local function GetChildrenDebug(obj)
     print("Children of", obj:GetFullName())
