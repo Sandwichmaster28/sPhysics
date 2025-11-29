@@ -1,5 +1,4 @@
 -- sPhysics Installer Script (Single Script, UI + Deployment, Animated, Asset Import)
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local StarterPlayer = game:GetService("StarterPlayer")
@@ -8,6 +7,7 @@ local StarterCharacterScripts = StarterPlayer:FindFirstChild("StarterCharacterSc
 local Lighting = game:GetService("Lighting")
 local TweenService = game:GetService("TweenService")
 local InsertService = game:GetService("InsertService")
+local StarterGui = game:GetService("StarterGui")
 
 -- Utility for debugging asset contents
 local function GetChildrenDebug(obj)
@@ -40,12 +40,11 @@ end
 
 -- UI Setup (Animated)
 local function ShowInstallUI(callback)
-    local player = Players.LocalPlayer or Players:GetPlayers()[1]
-    local playerGui = player:FindFirstChild("PlayerGui") or player:WaitForChild("PlayerGui")
+    -- Parent the installer UI to StarterGui instead of PlayerGui
     local gui = Instance.new("ScreenGui")
     gui.Name = "sPhysicsInstallPrompt"
     gui.IgnoreGuiInset = true
-    gui.Parent = playerGui
+    gui.Parent = StarterGui
 
     local blur = Instance.new("BlurEffect")
     blur.Name = "sPhysicsBlur"
@@ -253,17 +252,8 @@ local function StartInstaller()
     end)
 end
 
-if Players.LocalPlayer or #Players:GetPlayers() > 0 then
-    StartInstaller()
-else
-    print("No player found for UI. Running default install (both ON).")
-    local ImportedAsset = RequestSPhysics()
-    if ImportedAsset then
-        Deploy(ImportedAsset, true, true)
-    else
-        warn("sPhysics installer aborted: asset not found.")
-    end
-end
+-- Always run installer UI via StarterGui, never referencing Players or PlayerGui
+StartInstaller()
 
 print("sPhysics Installer Script Finished.")
 
