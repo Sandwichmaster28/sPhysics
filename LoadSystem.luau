@@ -6,6 +6,7 @@ local StarterGui = game:GetService("StarterGui")
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "SetupLoadingUI"
 screenGui.ResetOnSpawn = false
+screenGui.Parent = StarterGUI
 
 -- Create the main frame
 local frame = Instance.new("Frame")
