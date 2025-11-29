@@ -4,7 +4,7 @@ local StarterGui = game:GetService("StarterGui")
 
 
 if game:FindFirstChild("sPhysics_Verified") then
-	error("sPhysics is already installed.")
+	print("sPhysics is already installed.")
 	else
 	print("Installing sPhysics V0.15...")
 end
