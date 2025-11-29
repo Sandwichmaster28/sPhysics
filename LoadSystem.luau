@@ -174,12 +174,34 @@ local function Deploy(ImportedAsset, UseStarterCharacter, UseStarterCharacterScr
     print("StarterCharacter:", UseStarterCharacter)
     print("StarterCharacterScripts:", UseStarterCharacterScripts)
 
-    -- Find the main sPhysics folder (should be the only folder in the asset)
+    -- Find the main sPhysics folder, even if inside a Model named "Model"
     local sPhysicsFolder = nil
-    for i, obj in ImportedAsset:GetChildren() do
-        if obj:IsA("Folder") and obj.Name == "sPhysics" then
-            sPhysicsFolder = obj
+
+    -- First, look for a Model named "Model" inside the asset
+    local assetRoot = ImportedAsset
+    local modelContainer = nil
+    for i, obj in assetRoot:GetChildren() do
+        if obj:IsA("Model") and obj.Name == "Model" then
+            modelContainer = obj
             break
+        end
+    end
+
+    -- If found, look for sPhysics folder inside it
+    if modelContainer then
+        for i, obj in modelContainer:GetChildren() do
+            if obj:IsA("Folder") and obj.Name == "sPhysics" then
+                sPhysicsFolder = obj
+                break
+            end
+        end
+    else
+        -- Fallback: look for sPhysics folder directly in asset
+        for i, obj in assetRoot:GetChildren() do
+            if obj:IsA("Folder") and obj.Name == "sPhysics" then
+                sPhysicsFolder = obj
+                break
+            end
         end
     end
 
