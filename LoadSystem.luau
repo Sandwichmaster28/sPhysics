@@ -1,21 +1,42 @@
 -- Separate and loaded from a Loadstring for QOL.
 print("This method WORKS." Continuing the script.)
-
--- sPhysics Installer Script (Single Script, UI + Deployment, Animated)
+-- sPhysics Installer Script (Single Script, UI + Deployment, Animated, Asset Import)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local StarterPlayer = game:GetService("StarterPlayer")
 local Lighting = game:GetService("Lighting")
 local TweenService = game:GetService("TweenService")
+local InsertService = game:GetService("InsertService")
 
--- Find ExportFolder (assume it's script.Parent)
-local ExportFolder = script.Parent
-local StarterPlayerFolder = ExportFolder:FindFirstChild("StarterPlayer")
-local StarterCharacterScripties = StarterPlayerFolder and StarterPlayerFolder:FindFirstChild("StarterCharacterScripts")
-local DefaultRig = StarterPlayerFolder and StarterPlayerFolder:FindFirstChild("StarterCharacter")
-local ReplicatedFolder = ExportFolder:FindFirstChild("ReplicatedStorage")
-local ServerFolder = ExportFolder:FindFirstChild("ServerScriptService")
+-- Utility for debugging asset contents
+local function GetChildrenDebug(obj)
+    print("Children of", obj:GetFullName())
+    for i, v in obj:GetChildren() do
+        print("  ", v.Name, v.ClassName)
+    end
+end
+
+-- Function to request sPhysics asset by ID
+local function RequestSPhysics()
+    print("Requesting sPhysics object...")
+    local AssetId = 79496498163804
+    local success, Asset = pcall(function()
+        return InsertService:LoadAsset(AssetId)
+    end)
+    if success and Asset then
+        print("Downloaded: sPhysics V0.15")
+        print("Double checking...")
+        GetChildrenDebug(Asset)
+        print("Prompting user for instruction...")
+        -- Optionally parent the asset to Workspace for visibility
+        Asset.Parent = game:GetService("Workspace")
+        return Asset
+    else
+        warn("Failed to download sPhysics asset. Make sure API Services are enabled in Studio.")
+        return nil
+    end
+end
 
 -- UI Setup (Animated)
 local function ShowInstallUI(callback)
@@ -156,10 +177,16 @@ local function ShowInstallUI(callback)
 end
 
 -- Deployment logic
-local function Deploy(UseStarterCharacter, UseStarterCharacterScripts)
+local function Deploy(ExportFolder, UseStarterCharacter, UseStarterCharacterScripts)
     print("Deploying sPhysics with options:")
     print("StarterCharacter:", UseStarterCharacter)
     print("StarterCharacterScripts:", UseStarterCharacterScripts)
+
+    local StarterPlayerFolder = ExportFolder:FindFirstChild("StarterPlayer")
+    local StarterCharacterScripties = StarterPlayerFolder and StarterPlayerFolder:FindFirstChild("StarterCharacterScripts")
+    local DefaultRig = StarterPlayerFolder and StarterPlayerFolder:FindFirstChild("StarterCharacter")
+    local ReplicatedFolder = ExportFolder:FindFirstChild("ReplicatedStorage")
+    local ServerFolder = ExportFolder:FindFirstChild("ServerScriptService")
 
     if StarterPlayerFolder then
         if UseStarterCharacter and UseStarterCharacterScripts then
@@ -218,10 +245,14 @@ end
 -- Main execution
 print("sPhysics Installer Script Running...")
 
--- Only run UI if in Studio and PlayerGui is available
 local function StartInstaller()
+    local ExportFolder = RequestSPhysics()
+    if not ExportFolder then
+        warn("sPhysics installer aborted: asset not found.")
+        return
+    end
     ShowInstallUI(function(UseStarterCharacter, UseStarterCharacterScripts)
-        Deploy(UseStarterCharacter, UseStarterCharacterScripts)
+        Deploy(ExportFolder, UseStarterCharacter, UseStarterCharacterScripts)
     end)
 end
 
@@ -229,8 +260,17 @@ if Players.LocalPlayer or #Players:GetPlayers() > 0 then
     StartInstaller()
 else
     print("No player found for UI. Running default install (both ON).")
-    Deploy(true, true)
+    local ExportFolder = RequestSPhysics()
+    if ExportFolder then
+        Deploy(ExportFolder, true, true)
+    else
+        warn("sPhysics installer aborted: asset not found.")
+    end
 end
 
 print("sPhysics Installer Script Finished.")
 
+
+print("If you made it here, the sPhysics module deployed...")
+task.wait(1)
+print("SUCCESFULLY!!!")
