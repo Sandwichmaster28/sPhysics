@@ -1,10 +1,10 @@
--- Separate and loaded from a Loadstring for QOL.
-print("This method WORKS.")
 -- sPhysics Installer Script (Single Script, UI + Deployment, Animated, Asset Import)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerScriptService = game:GetService("ServerScriptService")
 local StarterPlayer = game:GetService("StarterPlayer")
+local StarterPlayerScripts = StarterPlayer:FindFirstChild("StarterPlayerScripts")
+local StarterCharacterScripts = StarterPlayer:FindFirstChild("StarterCharacterScripts")
 local Lighting = game:GetService("Lighting")
 local TweenService = game:GetService("TweenService")
 local InsertService = game:GetService("InsertService")
@@ -176,64 +176,61 @@ local function ShowInstallUI(callback)
     end)
 end
 
--- Deployment logic
-local function Deploy(ExportFolder, UseStarterCharacter, UseStarterCharacterScripts)
+-- Deployment logic (optimized)
+local function Deploy(ImportedAsset, UseStarterCharacter, UseStarterCharacterScripts)
     print("Deploying sPhysics with options:")
     print("StarterCharacter:", UseStarterCharacter)
     print("StarterCharacterScripts:", UseStarterCharacterScripts)
 
-    local StarterPlayerFolder = ExportFolder:FindFirstChild("StarterPlayer")
-    local StarterCharacterScripties = StarterPlayerFolder and StarterPlayerFolder:FindFirstChild("StarterCharacterScripts")
-    local DefaultRig = StarterPlayerFolder and StarterPlayerFolder:FindFirstChild("StarterCharacter")
-    local ReplicatedFolder = ExportFolder:FindFirstChild("ReplicatedStorage")
-    local ServerFolder = ExportFolder:FindFirstChild("ServerScriptService")
-
-    if StarterPlayerFolder then
-        if UseStarterCharacter and UseStarterCharacterScripts then
-            if DefaultRig then
-                DefaultRig.Parent = StarterPlayer
+    -- Helper to move children to service by folder name
+    local function MoveFolderContents(folder, service)
+        for i, obj in folder:GetChildren() do
+            if obj.Name == "ThumbnailCamera" or obj.Name == "Thumbnail" then
+                -- Ignore
+            elseif obj.Name == "DefaultRig" and obj:IsA("Model") then
+                obj.Parent = ReplicatedStorage
+            elseif obj:IsA("Folder") and game:GetService(obj.Name) then
+                -- Nested folder for a service, move its children to the service
+                MoveFolderContents(obj, game:GetService(obj.Name))
+                obj:Destroy()
+            elseif obj.Name == "StarterCharacterScripts" and obj:IsA("Folder") then
+                if UseStarterCharacterScripts and StarterCharacterScripts then
+                    for j, child in obj:GetChildren() do
+                        child.Parent = StarterCharacterScripts
+                    end
+                end
+                obj:Destroy()
+            elseif obj.Name == "StarterCharacter" and obj:IsA("Model") then
+                if UseStarterCharacter then
+                    obj.Parent = StarterPlayer
+                else
+                    obj:Destroy()
+                end
+            else
+                obj.Parent = service
             end
-            if StarterCharacterScripties then
-                StarterCharacterScripties.Parent = StarterPlayer:FindFirstChild("StarterCharacterScripts")
-            end
-            StarterPlayerFolder:Destroy()
-        elseif not UseStarterCharacter and UseStarterCharacterScripts then
-            -- This is an invalid state, just destroy the folder and continue
-            StarterPlayerFolder:Destroy()
-        elseif UseStarterCharacter and not UseStarterCharacterScripts then
-            if DefaultRig then
-                DefaultRig.Parent = StarterPlayer
-            end
-            StarterPlayerFolder:Destroy()
-        elseif not UseStarterCharacter and not UseStarterCharacterScripts then
-            StarterPlayerFolder:Destroy()
         end
     end
 
-    if ReplicatedFolder then
-        local remotes = ReplicatedFolder:FindFirstChild("sPhysics_Remotes")
-        local coreStorage = ReplicatedFolder:FindFirstChild("sPhysics_CoreStorage")
-        if remotes then
-            remotes.Parent = ReplicatedStorage
+    -- Main asset deployment
+    for i, folder in ImportedAsset:GetChildren() do
+        if folder:IsA("Folder") and game:GetService(folder.Name) then
+            MoveFolderContents(folder, game:GetService(folder.Name))
+            folder:Destroy()
+        elseif folder.Name == "DefaultRig" and folder:IsA("Model") then
+            folder.Parent = ReplicatedStorage
+        elseif folder.Name == "ThumbnailCamera" or folder.Name == "Thumbnail" then
+            -- Ignore
+        else
+            -- Any other objects not handled, delete
+            folder:Destroy()
         end
-        if coreStorage then
-            coreStorage.Parent = ReplicatedStorage
-        end
-        ReplicatedFolder:Destroy()
-    end
-
-    if ServerFolder then
-        local coreScripts = ServerFolder:FindFirstChild("sPhysics_CoreScripts")
-        if coreScripts then
-            coreScripts.Parent = ServerScriptService
-        end
-        ServerFolder:Destroy()
     end
 
     print("Setup Complete | sPhysics")
     task.wait(1)
-    if ExportFolder then
-        ExportFolder:Destroy()
+    if ImportedAsset then
+        ImportedAsset:Destroy()
     end
 
     local VerifyObject = Instance.new("BoolValue")
@@ -246,13 +243,13 @@ end
 print("sPhysics Installer Script Running...")
 
 local function StartInstaller()
-    local ExportFolder = RequestSPhysics()
-    if not ExportFolder then
+    local ImportedAsset = RequestSPhysics()
+    if not ImportedAsset then
         warn("sPhysics installer aborted: asset not found.")
         return
     end
     ShowInstallUI(function(UseStarterCharacter, UseStarterCharacterScripts)
-        Deploy(ExportFolder, UseStarterCharacter, UseStarterCharacterScripts)
+        Deploy(ImportedAsset, UseStarterCharacter, UseStarterCharacterScripts)
     end)
 end
 
@@ -260,9 +257,9 @@ if Players.LocalPlayer or #Players:GetPlayers() > 0 then
     StartInstaller()
 else
     print("No player found for UI. Running default install (both ON).")
-    local ExportFolder = RequestSPhysics()
-    if ExportFolder then
-        Deploy(ExportFolder, true, true)
+    local ImportedAsset = RequestSPhysics()
+    if ImportedAsset then
+        Deploy(ImportedAsset, true, true)
     else
         warn("sPhysics installer aborted: asset not found.")
     end
@@ -270,7 +267,3 @@ end
 
 print("sPhysics Installer Script Finished.")
 
-
-print("If you made it here, the sPhysics module deployed...")
-task.wait(1)
-print("SUCCESFULLY!!!")
