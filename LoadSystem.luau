@@ -1,12 +1,5 @@
 -- sPhysics Installer Script (Single Script, UI + Deployment, Animated, Asset Import)
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
-local StarterPlayer = game:GetService("StarterPlayer")
-local StarterPlayerScripts = StarterPlayer:FindFirstChild("StarterPlayerScripts")
-local StarterCharacterScripts = StarterPlayer:FindFirstChild("StarterCharacterScripts")
-local Lighting = game:GetService("Lighting")
-local TweenService = game:GetService("TweenService")
-local InsertService = game:GetService("InsertService")
+local game = game
 local StarterGui = game:GetService("StarterGui")
 
 -- Utility for debugging asset contents
@@ -22,7 +15,7 @@ local function RequestSPhysics()
     print("Requesting sPhysics object...")
     local AssetId = 79496498163804
     local success, Asset = pcall(function()
-        return InsertService:LoadAsset(AssetId)
+        return game:GetService("InsertService"):LoadAsset(AssetId)
     end)
     if success and Asset then
         print("Downloaded: sPhysics V0.15")
@@ -40,7 +33,7 @@ end
 
 -- UI Setup (Animated)
 local function ShowInstallUI(callback)
-    -- Parent the installer UI to StarterGui instead of PlayerGui
+    -- Parent the installer UI to StarterGui
     local gui = Instance.new("ScreenGui")
     gui.Name = "sPhysicsInstallPrompt"
     gui.IgnoreGuiInset = true
@@ -49,10 +42,10 @@ local function ShowInstallUI(callback)
     local blur = Instance.new("BlurEffect")
     blur.Name = "sPhysicsBlur"
     blur.Size = 0
-    blur.Parent = Lighting
+    blur.Parent = game:GetService("Lighting")
 
     -- Animate blur in
-    TweenService:Create(blur, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = 36}):Play()
+    game:GetService("TweenService"):Create(blur, game:GetService("TweenInfo").new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = 36}):Play()
 
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0, 400, 0, 260)
@@ -63,7 +56,7 @@ local function ShowInstallUI(callback)
     frame.Parent = gui
 
     -- Animate frame fade-in
-    TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
+    game:GetService("TweenService"):Create(frame, game:GetService("TweenInfo").new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
 
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, 0, 0, 50)
@@ -135,8 +128,8 @@ local function ShowInstallUI(callback)
         local colorOff = Color3.fromRGB(80, 80, 80)
         local barSize = state and 360 or 0
         local bgColor = state and colorOn or colorOff
-        TweenService:Create(btn, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = bgColor}):Play()
-        TweenService:Create(bar, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, barSize, 1, 0)}):Play()
+        game:GetService("TweenService"):Create(btn, game:GetService("TweenInfo").new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = bgColor}):Play()
+        game:GetService("TweenService"):Create(bar, game:GetService("TweenInfo").new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, barSize, 1, 0)}):Play()
     end
 
     charToggle.MouseButton1Click:Connect(function()
@@ -166,8 +159,8 @@ local function ShowInstallUI(callback)
 
     confirm.MouseButton1Click:Connect(function()
         -- Animate frame and blur out
-        TweenService:Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1}):Play()
-        TweenService:Create(blur, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = 0}):Play()
+        game:GetService("TweenService"):Create(frame, game:GetService("TweenInfo").new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1}):Play()
+        game:GetService("TweenService"):Create(blur, game:GetService("TweenInfo").new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = 0}):Play()
         task.wait(0.45)
         gui:Destroy()
         blur:Destroy()
@@ -186,22 +179,20 @@ local function Deploy(ImportedAsset, UseStarterCharacter, UseStarterCharacterScr
         for i, obj in folder:GetChildren() do
             if obj.Name == "ThumbnailCamera" or obj.Name == "Thumbnail" then
                 -- Ignore
-            elseif obj.Name == "DefaultRig" and obj:IsA("Model") then
-                obj.Parent = ReplicatedStorage
-            elseif obj:IsA("Folder") and game:GetService(obj.Name) then
+            elseif obj:IsA("Folder") then
                 -- Nested folder for a service, move its children to the service
-                MoveFolderContents(obj, game:GetService(obj.Name))
+                MoveFolderContents(obj, service)
                 obj:Destroy()
             elseif obj.Name == "StarterCharacterScripts" and obj:IsA("Folder") then
-                if UseStarterCharacterScripts and StarterCharacterScripts then
+                if UseStarterCharacterScripts then
                     for j, child in obj:GetChildren() do
-                        child.Parent = StarterCharacterScripts
+                        child.Parent = game:GetService("StarterCharacterScripts")
                     end
                 end
                 obj:Destroy()
             elseif obj.Name == "StarterCharacter" and obj:IsA("Model") then
                 if UseStarterCharacter then
-                    obj.Parent = StarterPlayer
+                    obj.Parent = game:GetService("StarterPlayer")
                 else
                     obj:Destroy()
                 end
@@ -213,15 +204,8 @@ local function Deploy(ImportedAsset, UseStarterCharacter, UseStarterCharacterScr
 
     -- Main asset deployment
     for i, folder in ImportedAsset:GetChildren() do
-        if folder:IsA("Folder") and game:GetService(folder.Name) then
+        if folder:IsA("Folder") then
             MoveFolderContents(folder, game:GetService(folder.Name))
-            folder:Destroy()
-        elseif folder.Name == "DefaultRig" and folder:IsA("Model") then
-            folder.Parent = ReplicatedStorage
-        elseif folder.Name == "ThumbnailCamera" or folder.Name == "Thumbnail" then
-            -- Ignore
-        else
-            -- Any other objects not handled, delete
             folder:Destroy()
         end
     end
@@ -252,8 +236,7 @@ local function StartInstaller()
     end)
 end
 
--- Always run installer UI via StarterGui, never referencing Players or PlayerGui
+-- Always run installer UI via StarterGui
 StartInstaller()
 
 print("sPhysics Installer Script Finished.")
-
