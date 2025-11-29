@@ -90,10 +90,13 @@
             color: #00ff00; 
         }
 
-        /* Styling for the file tree image containers */
+        /* Styling for the file tree image containers - ADJUSTED FOR SIZE */
         .file-tree-container {
-            max-width: 100%;
-            overflow-x: auto;
+            /* Set a maximum width for the container */
+            max-width: 48rem; /* Equivalent to max-w-3xl in Tailwind */
+            width: 100%;
+            margin: 0 auto; /* Center the image container */
+            overflow-x: auto; /* Keep scroll if content is too wide (e.g., on mobile) */
             border: 1px solid #333333;
             border-radius: 0.75rem;
             padding: 1rem;
@@ -103,7 +106,9 @@
             display: block;
             width: 100%;
             height: auto;
-            min-width: 600px; /* Ensure structure is visible on small screens */
+            max-height: 70vh; /* Prevents image from taking up the whole viewport height */
+            object-fit: contain; /* Ensures the image is fully visible without stretching or cropping */
+            min-width: 400px; /* Adjusted minimum width to still allow for readability */
         }
     </style>
 </head>
