@@ -15,7 +15,7 @@
                         'primary-bg': '#000000', // True Black
                         'secondary-bg': '#111111', // Very Dark Gray for panels
                         'accent': '#ffffff', // Primary White accent color
-                        'text-light': '#f3f3f3', // Bright White (Adjusted from #f3ff00 which looked neon yellow)
+                        'text-light': '#f3f3f3', // Bright White
                         'text-muted': '#aaaaaa', // Light Gray for secondary text
                         'line': '#333333', // Subtle separator line
                     },
@@ -86,6 +86,22 @@
             /* Changed to a classic neon green for code contrast */
             color: #00ff00; 
         }
+
+        /* Styling for the file tree image containers */
+        .file-tree-container {
+            max-width: 100%;
+            overflow-x: auto;
+            border: 1px solid #333333;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            background-color: #1a1a1a;
+        }
+        .file-tree-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+            min-width: 600px; /* Ensure structure is visible on small screens */
+        }
     </style>
 </head>
 <body class="bg-primary-bg min-h-screen flex flex-col">
@@ -97,15 +113,29 @@
         <aside id="sidebar" class="bg-secondary-bg text-text-light w-full lg:w-64 p-4 lg:p-6 border-b lg:border-r border-line shadow-2xl flex-shrink-0">
             <header class="mb-10">
                 <div class="flex items-center space-x-3 mb-4">
-                    <!-- New Black/White Logo: Stylized 's' and 'P' inside a cube -->
-                    <svg class="w-10 h-10 text-accent" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Outline Cube (Monochrome) -->
-                        <path d="M16 2L2 10V22L16 30L30 22V10L16 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                        <!-- Inner Lines to emphasize 3D -->
-                        <path d="M2 10L16 18L30 10" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                        <path d="M16 2V18" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                        <!-- Text/Glyphs (sP) -->
-                        <text x="16" y="24" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#111111" class="select-none">sP</text>
+                    <!-- Updated Black/White Logo: Pixel Cube (based on 2025_11_28_0vk_Kleki.png) -->
+                    <svg class="w-10 h-10 text-accent" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <style>
+                            .pixel-cube {
+                                stroke: white;
+                                stroke-width: 2;
+                                stroke-linejoin: round;
+                                fill: none;
+                            }
+                            .pixel-dot {
+                                fill: white;
+                                stroke: none;
+                            }
+                        </style>
+                        <!-- Front Face -->
+                        <path class="pixel-cube" d="M 20 20 L 80 20 L 80 80 L 20 80 Z" />
+                        <!-- Top Face Projection (Simple 2D representation of the cube structure) -->
+                        <path class="pixel-cube" d="M 20 20 L 50 10 L 80 20" />
+                        <!-- Side Face Projection -->
+                        <path class="pixel-cube" d="M 80 20 L 90 50 L 80 80" />
+                        <path class="pixel-cube" d="M 50 10 L 50 80" />
+                        <!-- Text/Glyphs (sPhys) in Pixel Font Style -->
+                        <text x="50" y="55" font-family="monospace" font-size="20" font-weight="bold" text-anchor="middle" fill="white" class="select-none">sPhys</text>
                     </svg>
 
                     <h1 class="text-3xl font-extrabold text-accent tracking-widest uppercase">sPhysics</h1>
@@ -134,6 +164,11 @@
                 <a href="#data" data-page="data" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-white/10 flex items-center space-x-3 text-text-muted hover:text-accent">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
                     <span>Data Get/Post</span>
+                </a>
+                 <!-- New Source Link -->
+                <a href="#source" data-page="source" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-white/10 flex items-center space-x-3 text-text-muted hover:text-accent">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                    <span>Source Map</span>
                 </a>
             </nav>
         </aside>
@@ -164,7 +199,7 @@
         const content = document.getElementById('content');
         const navLinks = document.querySelectorAll('.nav-link');
 
-        // LUA CODE STRING DEFINITION (Moved out of template literal to prevent SyntaxError)
+        // LUA CODE STRING DEFINITION 
         const luaCodeSnippet = `
 -- Example: Initializing the correction loop
 
@@ -218,6 +253,11 @@ end)
                 </a>
             `;
         }
+
+        // Base URLs for the uploaded images to be used in the Source tab
+        // NOTE: These URLs are placeholders for the Canvas environment and need to be treated as such.
+        const serverTreeUrl = "https://placehold.co/400x600/111/fff?text=ServerScriptService+Tree"; // Placeholder for image_d34bcb.png
+        const replicatedTreeUrl = "https://placehold.co/400x600/111/fff?text=ReplicatedStorage+Tree"; // Placeholder for 2025_11_28_0w0_Kleki.png
 
         // Page content definitions
         const pages = {
@@ -350,6 +390,10 @@ end)
                 title: "Sound: The Adaptive Audio Engine",
                 body: `
                     <div class="space-y-6">
+                        <span class="inline-block bg-white/10 text-accent text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase mb-4 border border-line">
+                            CORE MODULE
+                        </span>
+                        <h2 class="text-5xl font-extrabold text-accent mb-6">Adaptive Audio Engine</h2>
                         <p class="text-text-muted text-lg">
                             The Adaptive Audio Engine dynamically generates soundscapes based on player interaction and environmental geometry, adding realistic depth with impact sounds, breaking effects, and ambient wind.
                         </p>
@@ -383,6 +427,10 @@ end)
                 title: "Geometry Solver: Advanced Simulation",
                 body: `
                     <div class="space-y-6">
+                        <span class="inline-block bg-white/10 text-accent text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase mb-4 border border-line">
+                            CORE MODULE
+                        </span>
+                        <h2 class="text-5xl font-extrabold text-accent mb-6">Fluid and Destruction Dynamics</h2>
                         <p class="text-text-muted text-lg">
                             The Geometry Solver is responsible for complex structural and fluid dynamics that extend beyond the capabilities of the core sPhysics engine, handling highly interactive world elements.
                         </p>
@@ -414,6 +462,10 @@ end)
                 title: "Data Get/Post: Communication Layer",
                 body: `
                     <div class="space-y-6">
+                        <span class="inline-block bg-white/10 text-accent text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase mb-4 border border-line">
+                            CORE MODULE
+                        </span>
+                        <h2 class="text-5xl font-extrabold text-accent mb-6">Secure Communication Layer</h2>
                         <p class="text-text-muted text-lg">
                             The Data Layer handles all internal and external communication, ensuring secure and efficient transfer of information throughout the application and to remote servers.
                         </p>
@@ -439,6 +491,46 @@ local data = sPhys.Data.Get("PlayerStats", playerId)
                             <div class="mt-4 text-text-muted text-sm space-y-2">
                                 <p><strong>Recommended Usage:</strong> Logging, analytics, and external database synchronization.</p>
                                 <p><strong>Security:</strong> All API keys and secrets should be stored using the internal Secrets Manager API, not hardcoded.</p>
+                            </div>
+                        </section>
+                    </div>
+                `
+            },
+            source: {
+                title: "Source Map & File Structure",
+                body: `
+                    <div class="space-y-12">
+                        <p class="text-text-muted text-lg">
+                            The sPhysics framework is organized into separate components for Server-Side logic (<code>ServerScriptService</code>) and Client-Accessible data (<code>ReplicatedStorage</code>). Understanding this map is key to successful integration.
+                        </p>
+
+                        <!-- Server Structure -->
+                        <section class="space-y-6">
+                            <h3 class="text-3xl font-bold text-accent border-b-2 border-line pb-3 tracking-wide flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><path d="M10 7V4a2 2 0 0 1 4 0v3"/></svg>
+                                <span>ServerScriptService: Core Logic</span>
+                            </h3>
+                            <p class="text-text-muted">
+                                This directory holds the main computation modules, sensitive data handling, and physics correction loops that run only on the server.
+                            </p>
+                            <div class="file-tree-container">
+                                <!-- image_d34bcb.png (ServerScriptService) -->
+                                <img src="${serverTreeUrl}" alt="ServerScriptService File Structure Diagram" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x600/111/fff?text=ServerScriptService+Tree';">
+                            </div>
+                        </section>
+
+                        <!-- Client Structure -->
+                        <section class="space-y-6">
+                            <h3 class="text-3xl font-bold text-accent border-b-2 border-line pb-3 tracking-wide flex items-center space-x-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l-5 5-5-5"/><path d="M19 12h3"/><path d="M12 19v3"/><path d="M5 19l-5 5"/><path d="M19 5l5 5"/></svg>
+                                <span>ReplicatedStorage: Remote Calls & Client Data</span>
+                            </h3>
+                            <p class="text-text-muted">
+                                This area manages all the remote events (like <code>sPhysics_Remotes</code>) used for secure client-server communication and client-side data configuration (<code>sPhysics_CoreStorage</code>).
+                            </p>
+                            <div class="file-tree-container">
+                                <!-- 2025_11_28_0w0_Kleki.png (ReplicatedStorage) -->
+                                <img src="${replicatedTreeUrl}" alt="ReplicatedStorage File Structure Diagram" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x600/111/fff?text=ReplicatedStorage+Tree';">
                             </div>
                         </section>
                     </div>
