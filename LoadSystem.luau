@@ -1,5 +1,5 @@
 -- Separate and loaded from a Loadstring for QOL.
-print("This method WORKS." Continuing the script.)
+print("This method WORKS. Continuing the script.")
 -- sPhysics Installer Script (Single Script, UI + Deployment, Animated, Asset Import)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
