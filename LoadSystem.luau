@@ -45,7 +45,7 @@ local function ShowInstallUI(callback)
     blur.Parent = game:GetService("Lighting")
 
     -- Animate blur in
-    game:GetService("TweenService"):Create(blur, game:GetService("TweenInfo").new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = 36}):Play()
+    game:GetService("TweenService"):Create(blur, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = 36}):Play()
 
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0, 400, 0, 260)
@@ -56,7 +56,7 @@ local function ShowInstallUI(callback)
     frame.Parent = gui
 
     -- Animate frame fade-in
-    game:GetService("TweenService"):Create(frame, game:GetService("TweenInfo").new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
+    game:GetService("TweenService"):Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0}):Play()
 
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, 0, 0, 50)
@@ -128,8 +128,8 @@ local function ShowInstallUI(callback)
         local colorOff = Color3.fromRGB(80, 80, 80)
         local barSize = state and 360 or 0
         local bgColor = state and colorOn or colorOff
-        game:GetService("TweenService"):Create(btn, game:GetService("TweenInfo").new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = bgColor}):Play()
-        game:GetService("TweenService"):Create(bar, game:GetService("TweenInfo").new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, barSize, 1, 0)}):Play()
+        game:GetService("TweenService"):Create(btn, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = bgColor}):Play()
+        game:GetService("TweenService"):Create(bar, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, barSize, 1, 0)}):Play()
     end
 
     charToggle.MouseButton1Click:Connect(function()
@@ -159,8 +159,8 @@ local function ShowInstallUI(callback)
 
     confirm.MouseButton1Click:Connect(function()
         -- Animate frame and blur out
-        game:GetService("TweenService"):Create(frame, game:GetService("TweenInfo").new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1}):Play()
-        game:GetService("TweenService"):Create(blur, game:GetService("TweenInfo").new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = 0}):Play()
+        game:GetService("TweenService"):Create(frame, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1}):Play()
+        game:GetService("TweenService"):Create(blur, TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = 0}):Play()
         task.wait(0.45)
         gui:Destroy()
         blur:Destroy()
