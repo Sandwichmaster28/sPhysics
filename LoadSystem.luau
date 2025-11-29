@@ -168,45 +168,67 @@ local function ShowInstallUI(callback)
     end)
 end
 
--- Deployment logic (optimized)
+-- Deployment logic (corrected for sPhysics folder structure)
 local function Deploy(ImportedAsset, UseStarterCharacter, UseStarterCharacterScripts)
     print("Deploying sPhysics with options:")
     print("StarterCharacter:", UseStarterCharacter)
     print("StarterCharacterScripts:", UseStarterCharacterScripts)
 
-    -- Helper to move children to service by folder name
-    local function MoveFolderContents(folder, service)
-        for i, obj in folder:GetChildren() do
-            if obj.Name == "ThumbnailCamera" or obj.Name == "Thumbnail" then
-                -- Ignore
-            elseif obj:IsA("Folder") then
-                -- Nested folder for a service, move its children to the service
-                MoveFolderContents(obj, service)
-                obj:Destroy()
-            elseif obj.Name == "StarterCharacterScripts" and obj:IsA("Folder") then
-                if UseStarterCharacterScripts then
-                    for j, child in obj:GetChildren() do
-                        child.Parent = game:GetService("StarterCharacterScripts")
-                    end
-                end
-                obj:Destroy()
-            elseif obj.Name == "StarterCharacter" and obj:IsA("Model") then
-                if UseStarterCharacter then
-                    obj.Parent = game:GetService("StarterPlayer")
-                else
-                    obj:Destroy()
-                end
-            else
-                obj.Parent = service
-            end
+    -- Find the main sPhysics folder (should be the only folder in the asset)
+    local sPhysicsFolder = nil
+    for i, obj in ImportedAsset:GetChildren() do
+        if obj:IsA("Folder") and obj.Name == "sPhysics" then
+            sPhysicsFolder = obj
+            break
         end
     end
 
-    -- Main asset deployment
-    for i, folder in ImportedAsset:GetChildren() do
-        if folder:IsA("Folder") then
-            MoveFolderContents(folder, game:GetService(folder.Name))
-            folder:Destroy()
+    if not sPhysicsFolder then
+        warn("sPhysics folder not found in asset!")
+        return
+    end
+
+    -- Move contents of sPhysics subfolders to their respective services
+    for i, subfolder in sPhysicsFolder:GetChildren() do
+        if subfolder:IsA("Folder") then
+            if subfolder.Name == "StarterPlayer" then
+                -- Move StarterCharacter model if present
+                for j, child in subfolder:GetChildren() do
+                    if child.Name == "StarterCharacter" and child:IsA("Model") then
+                        if UseStarterCharacter then
+                            child.Parent = game:GetService("StarterPlayer")
+                        else
+                            child:Destroy()
+                        end
+                    end
+                end
+            elseif subfolder.Name == "StarterCharacterScripts" then
+                -- Move scripts to StarterCharacterScripts
+                if UseStarterCharacterScripts then
+                    for j, child in subfolder:GetChildren() do
+                        child.Parent = game:GetService("StarterCharacterScripts")
+                    end
+                end
+                subfolder:Destroy()
+            elseif subfolder.Name == "StarterPlayerScripts" then
+                -- Move scripts to StarterPlayerScripts
+                for j, child in subfolder:GetChildren() do
+                    child.Parent = game:GetService("StarterPlayerScripts")
+                end
+                subfolder:Destroy()
+            else
+                -- If folder matches another service, move its children
+                local service = nil
+                pcall(function()
+                    service = game:GetService(subfolder.Name)
+                end)
+                if service then
+                    for j, child in subfolder:GetChildren() do
+                        child.Parent = service
+                    end
+                    subfolder:Destroy()
+                end
+            end
         end
     end
 
