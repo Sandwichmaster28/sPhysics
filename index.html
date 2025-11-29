@@ -6,17 +6,18 @@
     <title>sPhysics Documentation - Sandwichmaster28</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Configure Tailwind for Dark Mode and custom theme -->
+    <!-- Configure Tailwind for High-Contrast Black/White Theme -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'primary-bg': '#0a0a0a',
-                        'secondary-bg': '#1f2937', // Slightly lighter dark gray
-                        'accent': '#4f46e5', // Cool blue/indigo accent
-                        'text-light': '#f3f4f6',
-                        'text-muted': '#9ca3af',
+                        'primary-bg': '#000000', // True Black
+                        'secondary-bg': '#111111', // Very Dark Gray for panels
+                        'accent': '#ffffff', // Primary White accent color
+                        'text-light': '#f3f3f3', // Bright White (Adjusted from #f3ff00 which looked neon yellow)
+                        'text-muted': '#aaaaaa', // Light Gray for secondary text
+                        'line': '#333333', // Subtle separator line
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -26,30 +27,64 @@
         }
     </script>
     <style>
-        /* Ensuring Inter font is used */
+        /* Global Styling and Font */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #f3f4f6;
+            background-color: var(--primary-bg);
+            color: var(--text-light);
         }
+
         /* Custom scrollbar for a cleaner look */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-thumb {
-            background-color: #374151;
+            background-color: #555555;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: #1f2937;
+            background: #222222;
         }
-        /* Fade-in for content transitions */
+
+        /* Animations and Transitions */
+        .nav-link {
+            transition: background-color 0.2s, color 0.2s, transform 0.1s;
+        }
+        .nav-link.active {
+             /* Use subtle shadow for active state */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); 
+        }
+        .nav-link:hover {
+            transform: translateX(4px);
+        }
+        
+        /* Fade-in for content transitions (improved) */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
-            animation: fadeIn 0.4s ease-out;
+            animation: fadeIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        /* Button Glow Effect */
+        .btn-glow {
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3);
+            transition: box-shadow 0.3s ease;
+        }
+        .btn-glow:hover {
+             box-shadow: 0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* Code Block Styling */
+        pre {
+            /* Keep code background very dark */
+            background-color: #080808 !important; 
+            border: 1px solid #333333;
+        }
+        code {
+            /* Changed to a classic neon green for code contrast */
+            color: #00ff00; 
         }
     </style>
 </head>
@@ -59,48 +94,44 @@
     <div id="app" class="flex flex-1 flex-col lg:flex-row">
 
         <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="bg-secondary-bg text-text-light w-full lg:w-64 p-4 lg:p-6 border-b lg:border-r border-gray-700 shadow-xl flex-shrink-0">
-            <header class="mb-8">
+        <aside id="sidebar" class="bg-secondary-bg text-text-light w-full lg:w-64 p-4 lg:p-6 border-b lg:border-r border-line shadow-2xl flex-shrink-0">
+            <header class="mb-10">
                 <div class="flex items-center space-x-3 mb-4">
-                    <!-- Custom sPhysics Icon SVG -->
-                    <svg class="w-8 h-8 text-accent" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <!-- 3D Cube Structure -->
-                        <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                        <!-- Vertices Dots -->
-                        <circle cx="12" cy="2" r="1.5" fill="currentColor" opacity="0.8"/>
-                        <circle cx="2" cy="7" r="1.5" fill="currentColor" opacity="0.8"/>
-                        <circle cx="2" cy="17" r="1.5" fill="currentColor" opacity="0.8"/>
-                        <circle cx="12" cy="22" r="1.5" fill="currentColor" opacity="0.8"/>
-                        <circle cx="22" cy="17" r="1.5" fill="currentColor" opacity="0.8"/>
-                        <circle cx="22" cy="7" r="1.5" fill="currentColor" opacity="0.8"/>
-                        <!-- Inner Text -->
-                        <text x="12" y="15" font-family="sans-serif" font-size="6" font-weight="bold" text-anchor="middle" fill="#0a0a0a">sPhys</text>
+                    <!-- New Black/White Logo: Stylized 's' and 'P' inside a cube -->
+                    <svg class="w-10 h-10 text-accent" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Outline Cube (Monochrome) -->
+                        <path d="M16 2L2 10V22L16 30L30 22V10L16 2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                        <!-- Inner Lines to emphasize 3D -->
+                        <path d="M2 10L16 18L30 10" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <path d="M16 2V18" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        <!-- Text/Glyphs (sP) -->
+                        <text x="16" y="24" font-family="sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="#111111" class="select-none">sP</text>
                     </svg>
 
-                    <h1 class="text-3xl font-extrabold text-accent tracking-wider">sPhysics</h1>
+                    <h1 class="text-3xl font-extrabold text-accent tracking-widest uppercase">sPhysics</h1>
                 </div>
                 <p class="text-xs text-text-muted">A framework by Sandwichmaster28</p>
             </header>
 
-            <nav class="space-y-2">
+            <nav class="space-y-3">
                 <!-- Navigation Links with Icons -->
-                <a href="#home" data-page="home" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                <a href="#home" data-page="home" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-white/10 flex items-center space-x-3 text-text-muted hover:text-accent">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                     <span>Home</span>
                 </a>
-                <a href="#physics" data-page="physics" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.73v.52a2 2 0 0 1-1 1.73l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.73v-.52a2 2 0 0 1 1-1.73l.15-.08a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                <a href="#physics" data-page="physics" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-white/10 flex items-center space-x-3 text-text-muted hover:text-accent">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.73v.52a2 2 0 0 1-1 1.73l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.73v-.52a2 2 0 0 1 1-1.73l-.15-.08a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                     <span>Physics</span>
                 </a>
-                <a href="#sound" data-page="sound" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                <a href="#sound" data-page="sound" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-white/10 flex items-center space-x-3 text-text-muted hover:text-accent">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
                     <span>Sound</span>
                 </a>
-                <a href="#geometry" data-page="geometry" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                <a href="#geometry" data-page="geometry" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-white/10 flex items-center space-x-3 text-text-muted hover:text-accent">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/></svg>
                     <span>Geometry Solver</span>
                 </a>
-                <a href="#data" data-page="data" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-gray-600/50 flex items-center space-x-3">
+                <a href="#data" data-page="data" class="nav-link block p-3 rounded-lg text-lg transition-colors duration-200 hover:bg-white/10 flex items-center space-x-3 text-text-muted hover:text-accent">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
                     <span>Data Get/Post</span>
                 </a>
@@ -114,13 +145,13 @@
     </div>
 
     <!-- Footer -->
-    <footer class="p-4 lg:p-8 border-t border-gray-700 bg-secondary-bg text-text-muted text-sm flex flex-col md:flex-row justify-between items-center flex-shrink-0">
+    <footer class="p-4 lg:p-8 border-t border-line bg-secondary-bg text-text-muted text-sm flex flex-col md:flex-row justify-between items-center flex-shrink-0">
         <p>&copy; 2023 sPhysics. All rights reserved.</p>
         <div class="flex space-x-6 mt-4 md:mt-0 items-center">
             <a href="#physics" class="hover:text-accent transition duration-150">Documentation</a>
             <a href="#" class="hover:text-accent transition duration-150">API Reference</a>
             <a href="#" class="hover:text-accent transition duration-150">Status</a>
-            <button onclick="window.open('https://github.com/Sandwichmaster28/sPhysics/archive/main.zip', '_blank')" class="flex items-center space-x-2 px-3 py-1 bg-accent text-white font-semibold rounded-lg hover:bg-indigo-600 transition duration-150">
+            <button onclick="window.open('https://github.com/Sandwichmaster28/sPhysics/archive/main.zip', '_blank')" class="flex items-center space-x-2 px-4 py-2 bg-accent text-primary-bg font-bold rounded-lg transition duration-150 btn-glow">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span>Download Source</span>
             </button>
@@ -133,12 +164,38 @@
         const content = document.getElementById('content');
         const navLinks = document.querySelectorAll('.nav-link');
 
+        // LUA CODE STRING DEFINITION (Moved out of template literal to prevent SyntaxError)
+        const luaCodeSnippet = `
+-- Example: Initializing the correction loop
+
+local RunService = game:GetService("RunService")
+local Physics = require(game.ServerStorage.Modules.Physics)
+local CorrectionRate = 60 -- Hz
+
+-- Connects to the primary simulation loop for real-time updates
+RunService.Heartbeat:Connect(function(delta)
+    local drift = Workspace.Gravity - Physics.ExpectedGravity
+    if math.abs(drift) > 0.001 then
+        -- ForceCorrect applies CFrame adjustments directly to parts
+        Physics.ForceCorrect(Workspace, drift, delta)
+    end
+end)
+`;
+
         // Helper functions for rendering template elements (used in home page)
         function renderStatusItem(name, status, color) {
+            // Updated status colors for B/W theme
+            const statusColorMap = {
+                'Operational': 'text-green-400',
+                'High Latency': 'text-yellow-400',
+                'Critical': 'text-red-600',
+            };
+            const finalColor = statusColorMap[status] || 'text-gray-400';
+
             return `
                 <li class="flex justify-between items-center text-sm">
                     <span class="text-text-light">${name}</span>
-                    <span class="font-medium flex items-center space-x-1 text-${color}">
+                    <span class="font-medium flex items-center space-x-1 ${finalColor}">
                         <svg class="w-3 h-3 fill-current" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="3"/></svg>
                         <span>${status}</span>
                     </span>
@@ -148,11 +205,13 @@
 
         function renderQuickLink(page, title, description, iconSvg) {
             return `
-                <a href="#${page}" data-page="${page}" class="quick-link block p-5 rounded-xl transition duration-150 transform hover:scale-[1.02] bg-gray-800/80 hover:bg-gray-700/80 shadow-md">
+                <a href="#${page}" data-page="${page}" class="quick-link block p-6 rounded-xl transition duration-300 transform hover:scale-[1.01] bg-secondary-bg hover:bg-white/10 shadow-lg border border-line">
                     <div class="flex items-start space-x-4">
-                        <div class="p-2 bg-accent/20 rounded-full text-accent">${iconSvg}</div>
+                        <div class="p-3 bg-white/10 rounded-full text-accent shadow-md">
+                            ${iconSvg}
+                        </div>
                         <div>
-                            <span class="text-xl font-bold text-text-light mb-1">${title}</span>
+                            <span class="text-xl font-bold text-accent mb-1">${title}</span>
                             <p class="text-sm text-text-muted">${description}</p>
                         </div>
                     </div>
@@ -165,36 +224,36 @@
             home: {
                 title: "Home", // Placeholder title
                 body: `
-                    <div class="space-y-12">
+                    <div class="space-y-16">
                         <!-- Large Header Block -->
-                        <div class="flex flex-col lg:flex-row lg:items-end justify-between pt-10">
+                        <div class="flex flex-col lg:flex-row lg:items-end justify-between pt-10 border-b border-line/50 pb-10">
                             <div class="lg:w-3/5">
-                                <span class="text-green-400 font-medium tracking-widest text-sm block mb-3">v2.1.0 Stable Build</span>
-                                <h2 class="text-5xl lg:text-7xl font-extrabold text-text-light leading-tight mb-4">
+                                <span class="text-yellow-400 font-medium tracking-widest text-sm block mb-3">v2.1.0 Stable Build</span>
+                                <h2 class="text-5xl lg:text-8xl font-black text-accent leading-tight mb-4 tracking-tighter">
                                     Next Gen Roblox Engineering.
                                 </h2>
-                                <p class="text-xl text-text-muted mb-8">Doing what DAVID "doesn't wanna" do.</p>
+                                <p class="text-xl text-text-muted mb-8 italic">Doing what DAVID "doesn't wanna" do.</p>
 
                                 <div class="flex space-x-4">
-                                    <button onclick="window.location.hash='#physics'" class="px-6 py-3 bg-accent text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-600 transition duration-150">
+                                    <button onclick="window.location.hash='#physics'" class="px-8 py-3 bg-accent text-primary-bg font-extrabold rounded-lg shadow-xl hover:bg-white/90 transition duration-300 btn-glow uppercase text-lg tracking-wider">
                                         Start Documentation
                                     </button>
-                                    <button onclick="window.open('https://github.com/Sandwichmaster28/sPhysics', '_blank')" class="px-6 py-3 bg-gray-700 text-text-light font-semibold rounded-lg shadow-lg hover:bg-gray-600 transition duration-150">
+                                    <button onclick="window.open('https://github.com/Sandwichmaster28/sPhysics', '_blank')" class="px-8 py-3 bg-secondary-bg text-accent font-semibold rounded-lg shadow-xl border border-white/20 hover:bg-white/20 transition duration-300 uppercase text-lg">
                                         View Source
                                     </button>
                                 </div>
                             </div>
-                            <div class="lg:w-2/5 mt-8 lg:mt-0 p-8 bg-gray-800 rounded-xl flex items-center justify-center">
-                                <!-- Large Code Icon -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14 4-4 16"/></svg>
+                            <div class="lg:w-2/5 mt-12 lg:mt-0 p-8 bg-secondary-bg rounded-xl flex items-center justify-center border border-line/50 shadow-2xl">
+                                <!-- Large Code Icon - White on Dark -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-accent animate-pulse-slow"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14 4-4 16"/></svg>
                             </div>
                         </div>
 
                         <!-- Core Modules Quick Links -->
-                        <div class="space-y-6 pt-10">
-                            <h3 class="text-2xl font-semibold text-text-light border-b border-gray-700 pb-2">Core Modules</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                ${renderQuickLink('physics', 'Parallel Physics', 'Real-time error correction for standard rigid body simulation.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.73v.52a2 2 0 0 1-1 1.73l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.73v-.52a2 2 0 0 1 1-1.73l.15-.08a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>')}
+                        <div class="space-y-8 pt-10">
+                            <h3 class="text-3xl font-bold text-accent border-b-2 border-line pb-3 tracking-wide">Core Modules</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                ${renderQuickLink('physics', 'Parallel Physics', 'Real-time error correction for standard rigid body simulation.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.08a2 2 0 0 1 1 1.73v.52a2 2 0 0 1-1 1.73l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.73v-.52a2 2 0 0 1 1-1.73l-.15-.08a2 2 0 0 0 .73-2.73l-.22-.39a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>')}
                                 ${renderQuickLink('sound', 'Sound Engine', 'Raycasted audio propagation with dual API support.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>')}
                                 ${renderQuickLink('geometry', 'Geometry Solver', 'Advanced fluid dynamics and destruction physics.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/></svg>')}
                                 ${renderQuickLink('data', 'Data I/O', 'Secure RemoteFunction handling and HTTP networking.', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>')}
@@ -202,28 +261,26 @@
                         </div>
 
                         <!-- Current Updates/Status Section -->
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-10 border-t border-gray-700">
-                            <div class="lg:col-span-2">
-                                <div class="flex items-center space-x-2 mb-4">
-                                    <h3 class="text-2xl font-semibold text-text-light flex items-center space-x-2 border-b-2 border-accent pb-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/></svg>
-                                        <span>Current Updates</span>
-                                    </h3>
-                                    <button class="text-sm text-text-muted hover:text-accent transition duration-150">Changelog</button>
-                                </div>
-                                <p class="text-text-muted">A brief summary of the latest module changes and performance metrics from the last production deployment.</p>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pt-10 border-t border-line/50">
+                            <div class="lg:col-span-2 space-y-4">
+                                <h3 class="text-3xl font-bold text-accent flex items-center space-x-3 border-b-2 border-line pb-3 tracking-wide">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-7 h-7"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/></svg>
+                                    <span>Current Updates</span>
+                                </h3>
+                                <p class="text-text-muted text-lg">A brief summary of the latest module changes and performance metrics from the last production deployment.</p>
+                                <button class="text-md font-semibold text-accent hover:text-white transition duration-150">View Full Changelog &rarr;</button>
                             </div>
-                            <div class="lg:col-span-1 bg-gray-800/80 p-5 rounded-xl shadow-inner border border-gray-700">
-                                <h4 class="text-lg font-bold flex items-center space-x-2 mb-4 text-text-light">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-accent"><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
+                            <div class="lg:col-span-1 bg-secondary-bg p-6 rounded-xl shadow-inner border border-line">
+                                <h4 class="text-xl font-bold flex items-center space-x-2 mb-5 text-accent border-b border-line pb-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5"><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M4.93 19.07l1.41-1.41"/><path d="M17.66 6.34l1.41-1.41"/></svg>
                                     <span>System Status</span>
                                 </h4>
-                                <ul class="space-y-3">
+                                <ul class="space-y-4">
                                     ${renderStatusItem('Physics Engine', 'Operational', 'green-500')}
                                     ${renderStatusItem('Sound API', 'Operational', 'green-500')}
                                     ${renderStatusItem('Data Relay', 'High Latency', 'yellow-500')}
                                 </ul>
-                                <button class="mt-4 w-full py-2 bg-gray-700 text-text-light rounded-lg hover:bg-gray-600 transition duration-150">
+                                <button class="mt-6 w-full py-2 bg-white/10 text-accent font-semibold rounded-lg hover:bg-white/20 transition duration-150">
                                     View Full Report
                                 </button>
                             </div>
@@ -233,31 +290,32 @@
             },
             physics: {
                 title: "Physics Engine",
+                // The body now uses the luaCodeSnippet variable defined above
                 body: `
                     <div class="space-y-8">
-                        <span class="inline-block bg-accent/20 text-accent text-xs font-semibold px-3 py-1 rounded-full tracking-widest uppercase mb-4">
+                        <span class="inline-block bg-white/10 text-accent text-xs font-bold px-3 py-1 rounded-full tracking-widest uppercase mb-4 border border-line">
                             CORE MODULE
                         </span>
-                        <h2 class="text-5xl font-extrabold text-text-light mb-6">Physics Engine</h2>
-                        <p class="text-text-light text-xl">
+                        <h2 class="text-5xl font-extrabold text-accent mb-6">Parallel Correction Layer</h2>
+                        <p class="text-text-muted text-xl">
                             A parallel processing layer that runs alongside the default Roblox Physics engine, providing real-time error correction and granular control over environmental constants.
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 space-y-3">
-                                <h3 class="text-xl font-semibold text-accent flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/></svg>
-                                    <span>Parallel Correction</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="bg-secondary-bg p-8 rounded-xl border border-line space-y-4 shadow-lg transition duration-300 hover:border-accent">
+                                <h3 class="text-2xl font-semibold text-accent flex items-center space-x-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/></svg>
+                                    <span>Drift Compensation</span>
                                 </h3>
                                 <p class="text-text-muted">
                                     The engine monitors rigid body states every frame. When the default solver introduces micro-errors (floating point drift), our engine instantly snaps the object back to its mathematically correct trajectory without visual stuttering.
                                 </p>
                             </div>
 
-                            <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 space-y-3">
-                                <h3 class="text-xl font-semibold text-accent flex items-center space-x-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
-                                    <span>Workspace Control</span>
+                            <div class="bg-secondary-bg p-8 rounded-xl border border-line space-y-4 shadow-lg transition duration-300 hover:border-accent">
+                                <h3 class="text-2xl font-semibold text-accent flex items-center space-x-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                                    <span>Environmental Control</span>
                                 </h3>
                                 <p class="text-text-muted">
                                     Direct override capability for global Workspace settings. Manipulate <code>Gravity</code>, <code>AirDensity</code>, and <code>GlobalFriction</code> in real-time via the API, bypassing standard replication delays.
@@ -265,35 +323,23 @@
                             </div>
                         </div>
 
-                        <h3 class="text-3xl font-bold text-text-light pt-4 border-t border-gray-700">Implementation Details</h3>
+                        <h3 class="text-3xl font-bold text-accent pt-6 border-t border-line mt-6">Implementation Details</h3>
 
-                        <div class="bg-gray-800/80 rounded-xl shadow-lg overflow-hidden border border-gray-700">
-                            <div class="bg-gray-700 text-sm px-4 py-2 border-b border-gray-600">
-                                <span class="text-text-light">PhysicsService.lua</span>
+                        <div class="bg-secondary-bg rounded-xl shadow-2xl overflow-hidden border border-line">
+                            <div class="bg-line text-sm px-5 py-3 border-b border-line/80">
+                                <span class="text-text-light font-medium">PhysicsService.lua</span>
                             </div>
-                            <pre class="p-6 bg-primary-bg overflow-x-auto text-sm">
-<code class="text-green-400">
--- Example: Initializing the correction loop
-
-local Physics = require(game.ServerStorage.Modules.Physics)
-local CorrectionRate = 60 -- Hz
-
-Physics.StartParallelProcess(function(delta)
-    local drift = Workspace.Gravity - Physics.ExpectedGravity
-    if math.abs(drift) > 0.001 then
-        Physics.ForceCorrect(Workspace, drift)
-    end
-end)
-</code>
+                            <pre class="p-6 overflow-x-auto text-sm">
+<code class="text-green-400 select-all">${luaCodeSnippet}</code>
                             </pre>
                         </div>
 
-                        <div class="p-4 rounded-xl border-l-4 border-yellow-500 bg-yellow-900/30 text-yellow-300 flex items-start space-x-3 mt-8">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+                        <div class="p-6 rounded-xl border-l-4 border-yellow-400 bg-yellow-900/30 text-yellow-300 flex items-start space-x-4 mt-8">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
                             <div>
-                                <h4 class="font-bold text-yellow-500">Resource Usage Warning</h4>
+                                <h4 class="font-bold text-yellow-400 text-lg">Resource Usage Warning</h4>
                                 <p class="text-sm">
-                                    Enabling full correction mode on over 500 active rigid bodies may impact server heartbeat. It is recommended to use <strong class="text-yellow-400">Zone-Based Correction</strong> for large maps.
+                                    Enabling full correction mode on over 500 active rigid bodies may impact server heartbeat. It is recommended to use <strong class="text-yellow-400">Zone-Based Correction</strong> for large maps, minimizing the overhead of the <code>Heartbeat</code> connection.
                                 </p>
                             </div>
                         </div>
@@ -304,28 +350,28 @@ end)
                 title: "Sound: The Adaptive Audio Engine",
                 body: `
                     <div class="space-y-6">
-                        <p class="text-text-light text-lg">
+                        <p class="text-text-muted text-lg">
                             The Adaptive Audio Engine dynamically generates soundscapes based on player interaction and environmental geometry, adding realistic depth with impact sounds, breaking effects, and ambient wind.
                         </p>
 
-                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
-                            <h3 class="text-xl font-semibold text-accent mb-3">Dynamic Sound Generation</h3>
+                        <section class="bg-secondary-bg p-8 rounded-xl border border-line shadow-lg">
+                            <h3 class="text-2xl font-semibold text-accent mb-4">Dynamic Sound Generation</h3>
                             <ul class="list-disc list-inside space-y-2 text-text-muted pl-4">
-                                <li><strong class="text-text-light">Impact Sounds:</strong> Varies loudness and tone based on velocity and material types (e.g., metal hitting concrete vs. wood hitting dirt).</li>
-                                <li><strong class="text-text-light">Breaking Sounds:</strong> Triggers multi-stage audio effects during object destruction, controlled by the Geometry Solver.</li>
-                                <li><strong class="text-text-light">Footsteps & Wind:</strong> Raycasting determines surface material for footsteps; procedural generation for ambient wind/environmental sounds.</li>
+                                <li><strong class="text-accent">Impact Sounds:</strong> Varies loudness and tone based on velocity and material types (e.g., metal hitting concrete vs. wood hitting dirt).</li>
+                                <li><strong class="text-accent">Breaking Sounds:</strong> Triggers multi-stage audio effects during object destruction, controlled by the Geometry Solver.</li>
+                                <li><strong class="text-accent">Footsteps & Wind:</strong> Raycasting determines surface material for footsteps; procedural generation for ambient wind/environmental sounds.</li>
                             </ul>
                         </section>
 
-                        <section class="bg-gray-800/80 p-6 rounded-xl border border-accent/30">
-                            <h3 class="text-xl font-semibold text-accent mb-3">API Modes</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                                <div class="p-4 bg-gray-700/50 rounded-lg">
-                                    <h4 class="text-lg font-bold text-indigo-400">Default Sound API Mode</h4>
+                        <section class="bg-secondary-bg p-8 rounded-xl border border-accent/50 shadow-lg">
+                            <h3 class="text-2xl font-semibold text-accent mb-4">API Modes</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-3">
+                                <div class="p-4 bg-white/10 rounded-lg border border-line">
+                                    <h4 class="text-lg font-bold text-text-light">Default Sound API Mode</h4>
                                     <p class="text-sm text-text-muted">Leverages the platform's built-in experimental audio API. Simpler integration, but less control over audio occlusion and reverb effects.</p>
                                 </div>
-                                <div class="p-4 bg-gray-700/50 rounded-lg border border-accent">
-                                    <h4 class="text-lg font-bold text-accent">Custom API Mode (Recommended)</h4>
+                                <div class="p-4 bg-white/10 rounded-lg border border-accent/80">
+                                    <h4 class="text-lg font-bold text-accent">Custom Raycasted API (Recommended)</h4>
                                     <p class="text-sm text-text-muted">Uses our proprietary, raycasted audio engine. Simulates sound occlusion and environmental reflection, resulting in truly 3D, realistic audio experiences.</p>
                                 </div>
                             </div>
@@ -337,26 +383,26 @@ end)
                 title: "Geometry Solver: Advanced Simulation",
                 body: `
                     <div class="space-y-6">
-                        <p class="text-text-light text-lg">
+                        <p class="text-text-muted text-lg">
                             The Geometry Solver is responsible for complex structural and fluid dynamics that extend beyond the capabilities of the core sPhysics engine, handling highly interactive world elements.
                         </p>
 
-                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
-                            <h3 class="text-xl font-semibold text-accent mb-3">Destruction Physics</h3>
+                        <section class="bg-secondary-bg p-8 rounded-xl border border-line shadow-lg">
+                            <h3 class="text-2xl font-semibold text-accent mb-4">Destruction Physics</h3>
                             <p class="text-text-muted">
                                 Utilizes a custom cellular automaton algorithm to model structural integrity. When a component's integrity fails, it automatically fragments the mesh into destructible, smaller parts, managed efficiently with internal chunking to minimize lag.
                             </p>
                         </section>
 
-                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
-                            <h3 class="text-xl font-semibold text-accent mb-3">Fluid Physics Simulation</h3>
+                        <section class="bg-secondary-bg p-8 rounded-xl border border-line shadow-lg">
+                            <h3 class="text-2xl font-semibold text-accent mb-4">Fluid Physics Simulation</h3>
                             <p class="text-text-muted">
                                 Implements a Smoothed Particle Hydrodynamics (SPH) solver for realistic water, lava, or gas behavior. This allows for dynamic flow, pressure calculation, and buoyancy effects on objects interacting with the fluid volume.
                             </p>
                         </section>
 
-                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
-                            <h3 class="text-xl font-semibold text-accent mb-3">Image Application and Editing</h3>
+                        <section class="bg-secondary-bg p-8 rounded-xl border border-line shadow-lg">
+                            <h3 class="text-2xl font-semibold text-accent mb-4">Image Application and Editing</h3>
                             <p class="text-text-muted">
                                 Provides tools to project, apply, and dynamically edit texture maps (Images) onto complex geometry in the workspace, supporting run-time procedural texture generation (e.g., dynamically rendered bullet decals).
                             </p>
@@ -368,23 +414,25 @@ end)
                 title: "Data Get/Post: Communication Layer",
                 body: `
                     <div class="space-y-6">
-                        <p class="text-text-light text-lg">
+                        <p class="text-text-muted text-lg">
                             The Data Layer handles all internal and external communication, ensuring secure and efficient transfer of information throughout the application and to remote servers.
                         </p>
 
-                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
-                            <h3 class="text-xl font-semibold text-accent mb-3">In-Game Data (RemoteFunctions)</h3>
+                        <section class="bg-secondary-bg p-8 rounded-xl border border-line shadow-lg">
+                            <h3 class="text-2xl font-semibold text-accent mb-4">In-Game Data (RemoteFunctions)</h3>
                             <p class="text-text-muted">
                                 This module abstracts raw RemoteFunction and RemoteEvent calls into a simple, promise-based API. It handles serialization, compression, and error-checking for all critical game state data.
                             </p>
-                            <pre class="mt-4 p-3 bg-primary-bg rounded text-sm text-green-400">
+                            <pre class="mt-4 p-4 rounded text-sm">
+<code class="text-green-400">
 -- Example: Fetching player data securely
 local data = sPhys.Data.Get("PlayerStats", playerId)
+</code>
                             </pre>
                         </section>
 
-                        <section class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
-                            <h3 class="text-xl font-semibold text-accent mb-3">HTTP Requests and Sends (External Data)</h3>
+                        <section class="bg-secondary-bg p-8 rounded-xl border border-line shadow-lg">
+                            <h3 class="text-2xl font-semibold text-accent mb-4">HTTP Requests and Sends (External Data)</h3>
                             <p class="text-text-muted">
                                 Manages all outbound and inbound HTTP communication (GET/POST/PUT) to external services. It includes built-in rate-limiting, exponential backoff, and secure header management to interact with APIs safely.
                             </p>
@@ -405,13 +453,13 @@ local data = sPhys.Data.Get("PlayerStats", playerId)
             let contentHtml = '';
 
             if (pageKey === 'home') {
-                // Home page handles its own title/header styling within the body
+                // For the home page, we skip the standard title wrapper
                 contentHtml = pageData.body;
             } else {
-                // Documentation pages use the standard title block
+                // For all other pages, wrap content in the fade-in container
                 contentHtml = `
                     <div class="content-container animate-fade-in">
-                        <h2 class="text-4xl lg:text-5xl font-extrabold mb-6 text-text-light border-b border-accent/50 pb-2">
+                        <h2 class="text-4xl lg:text-5xl font-extrabold mb-6 text-accent border-b border-line/50 pb-2">
                             ${pageData.title}
                         </h2>
                         ${pageData.body}
@@ -426,12 +474,12 @@ local data = sPhys.Data.Get("PlayerStats", playerId)
         // Function to update the active link in the sidebar
         function updateActiveLink(pageKey) {
             navLinks.forEach(link => {
+                link.classList.remove('active', 'bg-white/10', 'text-accent', 'font-bold');
+                link.classList.add('text-text-muted', 'hover:bg-white/10');
+
                 if (link.dataset.page === pageKey) {
-                    link.classList.add('bg-accent', 'text-white', 'font-bold', 'hover:bg-accent/80');
-                    link.classList.remove('text-text-light', 'hover:bg-gray-600/50');
-                } else {
-                    link.classList.remove('bg-accent', 'text-white', 'font-bold', 'hover:bg-accent/80');
-                    link.classList.add('text-text-light', 'hover:bg-gray-600/50');
+                    link.classList.add('active', 'bg-white/10', 'text-accent', 'font-bold');
+                    link.classList.remove('text-text-muted');
                 }
             });
             // Attach click handlers to dynamically rendered quick links on the home page
