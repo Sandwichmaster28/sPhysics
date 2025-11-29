@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sPhysics Documentation - Sandwichmaster28</title>
+    <!-- Favicon: Using the user-provided link for the new logo -->
+    <link rel="icon" type="image/png" href="https://github.com/Sandwichmaster28/sPhysics/blob/main/image%20(1).png?raw=true">
+    
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Configure Tailwind for High-Contrast Black/White Theme -->
@@ -254,10 +257,9 @@ end)
             `;
         }
 
-        // Base URLs for the uploaded images to be used in the Source tab
-        // NOTE: These URLs are placeholders for the Canvas environment and need to be treated as such.
-        const serverTreeUrl = "https://github.com/Sandwichmaster28/sPhysics/blob/main/sss.PNG?raw=true"; // Placeholder for image_d34bcb.png
-        const replicatedTreeUrl = "https://github.com/Sandwichmaster28/sPhysics/blob/main/2025_11_28_0w0_Kleki.png?raw=true"; // Placeholder for 2025_11_28_0w0_Kleki.png
+        // Base URLs for the uploaded images, now using the direct GitHub raw links
+        const serverTreeUrl = "https://github.com/Sandwichmaster28/sPhysics/blob/main/sss.PNG?raw=true";
+        const replicatedTreeUrl = "https://github.com/Sandwichmaster28/sPhysics/blob/main/2025_11_28_0w0_Kleki.png?raw=true";
 
         // Page content definitions
         const pages = {
@@ -514,8 +516,9 @@ local data = sPhys.Data.Get("PlayerStats", playerId)
                                 This directory holds the main computation modules, sensitive data handling, and physics correction loops that run only on the server.
                             </p>
                             <div class="file-tree-container">
-                                <!-- image_d34bcb.png (ServerScriptService) -->
-                                <img src="${serverTreeUrl}" alt="ServerScriptService File Structure Diagram" loading="lazy" onerror="this.onerror=null; this.src='https://github.com/Sandwichmaster28/sPhysics/blob/main/sss.PNG?raw=true';">
+                                <!-- sss.PNG (ServerScriptService) -->
+                                <img src="${serverTreeUrl}" alt="ServerScriptService File Structure Diagram" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x600/111/fff?text=ServerScriptService+Tree+Image+Failed+to+Load';">
+                                
                             </div>
                         </section>
 
@@ -530,7 +533,8 @@ local data = sPhys.Data.Get("PlayerStats", playerId)
                             </p>
                             <div class="file-tree-container">
                                 <!-- 2025_11_28_0w0_Kleki.png (ReplicatedStorage) -->
-                                <img src="${replicatedTreeUrl}" alt="ReplicatedStorage File Structure Diagram" loading="lazy" onerror="this.onerror=null; this.src='https://github.com/Sandwichmaster28/sPhysics/blob/main/2025_11_28_0w0_Kleki.png?raw=true';">
+                                <img src="${replicatedTreeUrl}" alt="ReplicatedStorage File Structure Diagram" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x600/111/fff?text=ReplicatedStorage+Tree+Image+Failed+to+Load';">
+                                
                             </div>
                         </section>
                     </div>
